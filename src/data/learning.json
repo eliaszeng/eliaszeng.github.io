@@ -1,47 +1,107 @@
 [
   {
-    "title": "Transformer 架构详解",
-    "description": "从 Attention Is All You Need 原论文出发，拆解 Transformer 的核心机制",
-    "type": "markdown",
-    "tags": ["Transformer", "NLP", "基础"],
-    "url": "#",
-    "date": "2026-04-15",
-    "category": "大模型基础"
+    "title": "12周学习计划",
+    "description": "完整的12周AI/ML学习计划总览",
+    "file": "12周学习计划_修订版.xlsx",
+    "tags": ["计划", "总览"],
+    "date": "2026-04-07"
   },
   {
-    "title": "LoRA 微调实验记录",
-    "description": "使用 LoRA 对 Llama 进行微调的完整实验过程和结论",
-    "type": "notebook",
-    "tags": ["LoRA", "Fine-tuning", "实验"],
-    "url": "#",
-    "date": "2026-04-20",
-    "category": "微调实践"
+    "title": "Week 1 教材",
+    "description": "第一周学习教材，涵盖 Python 核心、并发、元编程、设计模式、PyTorch 基础等",
+    "file": "week1_textbook.md",
+    "tags": ["Week 1", "教材"],
+    "date": "2026-04-07"
   },
   {
-    "title": "RAG 系统设计笔记",
-    "description": "检索增强生成系统的架构设计、向量数据库选型和优化策略",
-    "type": "markdown",
-    "tags": ["RAG", "向量数据库", "架构"],
-    "url": "#",
-    "date": "2026-05-01",
-    "category": "应用开发"
+    "title": "W1 Day1 — Python 核心与并发",
+    "description": "Python 核心语法、并发编程（多线程/多进程/异步）",
+    "file": "W1_Day1_Python_Core_Concurrency (1).ipynb",
+    "tags": ["Week 1", "Python", "并发"],
+    "date": "2026-04-13"
   },
   {
-    "title": "Attention 可视化分析",
-    "description": "通过可视化手段理解 Multi-Head Attention 的工作原理",
-    "type": "notebook",
-    "tags": ["Attention", "可视化", "PyTorch"],
-    "url": "#",
-    "date": "2026-05-03",
-    "category": "大模型基础"
+    "title": "W1 Day2 — 元编程与设计模式",
+    "description": "Python 元编程机制与常见设计模式实践",
+    "file": "W1_Day2_Metaprogramming_Design_Patterns.ipynb",
+    "tags": ["Week 1", "Python", "设计模式"],
+    "date": "2026-04-13"
   },
   {
-    "title": "LLM 推理优化综述",
-    "description": "量化、KV Cache、Speculative Decoding 等推理加速技术整理",
-    "type": "pdf",
-    "tags": ["推理优化", "量化", "KV Cache"],
-    "url": "#",
-    "date": "2026-05-05",
-    "category": "工程优化"
+    "title": "W1 Day3 — PyTorch Tensor 与 Autograd",
+    "description": "PyTorch 张量操作、自动求导机制",
+    "file": "W1_Day3_PyTorch_Tensor_Autograd.ipynb",
+    "tags": ["Week 1", "PyTorch", "Tensor"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W1 Day4 — Module、Optimizer 与 AMP",
+    "description": "PyTorch 模块构建、优化器、混合精度训练",
+    "file": "W1_Day4_Module_Optimizer_Data_AMP.ipynb",
+    "tags": ["Week 1", "PyTorch", "AMP"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W1 Day5 — micrograd",
+    "description": "手动实现一个微型自动微分引擎，理解反向传播本质",
+    "file": "W1_Day5_micrograd.ipynb",
+    "tags": ["Week 1", "自动微分", "底层原理"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W1 Day6 — CNN、ResNet 与 ViT",
+    "description": "卷积神经网络、残差网络、Vision Transformer",
+    "file": "w1_day6_cnn_resnet_vit.ipynb",
+    "tags": ["Week 1", "CNN", "ViT"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W2 Day1 — Attention 与 Transformer",
+    "description": "注意力机制原理与 Transformer 架构实现",
+    "file": "W2_Day1_Attention_Transformer.ipynb",
+    "tags": ["Week 2", "Transformer", "Attention"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W2 Day2 — CLIP 与对比学习",
+    "description": "CLIP 模型架构、对比学习（Contrastive Learning）原理与实现",
+    "file": "W2_Day2_CLIP_Contrastive_Learning.ipynb",
+    "tags": ["Week 2", "CLIP", "对比学习"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W2 Day3 — Loss 与 Metrics",
+    "description": "损失函数设计与评估指标体系",
+    "file": "w2_day3_loss_metrics.ipynb",
+    "tags": ["Week 2", "Loss", "Metrics"],
+    "date": "2026-04-13"
+  },
+  {
+    "title": "W2 Day4 — nanoGPT",
+    "description": "从零实现一个小型 GPT 模型",
+    "file": "W2_Day4_nanoGPT.ipynb",
+    "tags": ["Week 2", "GPT", "生成模型"],
+    "date": "2026-04-30"
+  },
+  {
+    "title": "W2 Day5 — Diffusion",
+    "description": "扩散模型原理与实现",
+    "file": "W2_Day5_Diffusion.ipynb",
+    "tags": ["Week 2", "Diffusion", "生成模型"],
+    "date": "2026-04-30"
+  },
+  {
+    "title": "W2 Day6 — Synthetic Pipeline",
+    "description": "合成数据管线构建",
+    "file": "W2_Day6_Synthetic_Pipeline.ipynb",
+    "tags": ["Week 2", "数据工程", "Pipeline"],
+    "date": "2026-04-30"
+  },
+  {
+    "title": "W2 Day7 — 阶段复习",
+    "description": "第二周综合复习与总结",
+    "file": "W2_Day7_Review.ipynb",
+    "tags": ["Week 2", "复习"],
+    "date": "2026-04-30"
   }
 ]

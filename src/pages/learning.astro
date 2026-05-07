@@ -2,74 +2,72 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import learning from '../data/learning.json';
 
-const typeIcons: Record<string, { icon: string; color: string }> = {
-  markdown: { icon: 'M', color: 'bg-sage text-paper' },
-  notebook: { icon: 'J', color: 'bg-terracotta text-paper' },
-  pdf: { icon: 'P', color: 'bg-ink text-cream' },
-};
-
-const categories = [...new Set(learning.map(l => l.category))];
+function getFileUrl(file: string): string {
+  if (file.endsWith('.ipynb')) {
+    return `https://nbviewer.org/github/eliaszeng/eliaszeng.github.io/blob/main/public/learning/${encodeURIComponent(file)}`;
+  }
+  return `/learning/${encodeURIComponent(file)}`;
+}
 ---
 
 <BaseLayout title="学习笔记 - Elias Zeng" activeNav="learning">
   <header class="mb-12">
     <p class="reveal font-mono text-xs text-ink-faint tracking-[0.3em] uppercase mb-4">LEARNING</p>
     <h1 class="reveal font-display text-5xl font-bold text-ink tracking-tight mb-4">学习笔记</h1>
-    <p class="reveal text-ink-light text-lg">大模型相关的学习资料、实验记录和读书笔记</p>
+    <p class="reveal text-ink-light text-lg">12 周 AI/ML 学习计划 — 从 Python 基础到 Transformer、Diffusion</p>
   </header>
 
-  <!-- Type legend -->
-  <div class="reveal flex items-center gap-6 mb-10">
-    {Object.entries(typeIcons).map(([type, config]) => (
-      <div class="flex items-center gap-2">
-        <span class={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold font-mono ${config.color}`}>
-          {config.icon}
-        </span>
-        <span class="text-sm text-ink-light">
-          {type === 'markdown' ? 'Markdown' : type === 'notebook' ? 'Jupyter' : 'PDF'}
-        </span>
-      </div>
-    ))}
+  <!-- Week indicators -->
+  <div class="reveal flex items-center gap-4 mb-10">
+    <div class="flex items-center gap-2 text-sm">
+      <span class="w-3 h-3 rounded-full bg-sage"></span>
+      <span class="text-ink-light">Week 1</span>
+    </div>
+    <div class="flex items-center gap-2 text-sm">
+      <span class="w-3 h-3 rounded-full bg-terracotta"></span>
+      <span class="text-ink-light">Week 2</span>
+    </div>
+    <div class="flex items-center gap-2 text-sm">
+      <span class="w-3 h-3 rounded-full bg-ink"></span>
+      <span class="text-ink-light">其他</span>
+    </div>
   </div>
 
-  {categories.map((category, ci) => (
-    <section class="mb-14">
-      <h2 class="reveal font-display text-2xl font-bold text-ink mb-6 flex items-center gap-3">
-        <span class="w-8 h-px bg-ink/20"></span>
-        {category}
-      </h2>
-      <div class="grid md:grid-cols-2 gap-4">
-        {learning.filter(l => l.category === category).map((item, i) => {
-          const tc = typeIcons[item.type] || typeIcons.markdown;
-          return (
-            <a
-              href={item.url}
-              class="reveal group bg-paper rounded-xl p-6 border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 flex gap-5"
-              style={`transition-delay: ${(ci * 2 + i) * 80}ms`}
-            >
-              <div class={`w-11 h-11 rounded-xl flex items-center justify-center text-sm font-bold font-mono shrink-0 ${tc.color}`}>
-                {tc.icon}
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-display text-lg font-bold text-ink group-hover:text-sage transition-colors duration-300 leading-snug mb-1.5">
-                  {item.title}
-                </h3>
-                <p class="text-sm text-ink-light leading-relaxed mb-3 line-clamp-2">
-                  {item.description}
-                </p>
-                <div class="flex items-center gap-3">
-                  {item.tags.map(tag => (
-                    <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-cream text-ink-faint tracking-wider">
-                      {tag}
-                    </span>
-                  ))}
-                  <span class="text-xs font-mono text-ink-faint ml-auto">{item.date}</span>
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    </section>
-  ))}
+  <div class="space-y-1">
+    {learning.map((item, i) => {
+      const isW1 = item.tags?.some(t => t.includes('Week 1'));
+      const isW2 = item.tags?.some(t => t.includes('Week 2'));
+      const dotColor = isW1 ? 'bg-sage' : isW2 ? 'bg-terracotta' : 'bg-ink';
+
+      return (
+        <a
+          href={getFileUrl(item.file)}
+          target={item.file.endsWith('.ipynb') ? '_blank' : undefined}
+          class="reveal group flex items-start gap-6 py-5 px-4 -mx-4 rounded-xl hover:bg-paper transition-all duration-300"
+          style={`transition-delay: ${i * 50}ms`}
+        >
+          <span class={`w-2 h-2 rounded-full ${dotColor} shrink-0 mt-2.5`}></span>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-display text-lg font-bold text-ink group-hover:text-terracotta transition-colors duration-300 leading-snug mb-1.5">
+              {item.title}
+            </h3>
+            <p class="text-sm text-ink-light leading-relaxed mb-2">
+              {item.description}
+            </p>
+            <div class="flex items-center gap-3">
+              {item.tags?.map(tag => (
+                <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-cream-dark text-ink-faint tracking-wider">
+                  {tag}
+                </span>
+              ))}
+              <span class="text-xs font-mono text-ink-faint ml-auto">{item.date}</span>
+            </div>
+          </div>
+          <span class="text-ink-faint group-hover:text-terracotta group-hover:translate-x-1 transition-all duration-300 shrink-0 pt-1 text-sm">
+            {item.file.endsWith('.ipynb') ? '↗' : '→'}
+          </span>
+        </a>
+      );
+    })}
+  </div>
 </BaseLayout>
