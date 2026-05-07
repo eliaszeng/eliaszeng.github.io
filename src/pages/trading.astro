@@ -1,0 +1,660 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="交易日记 — Elias Zeng" activeNav="trading">
+
+  {/* Page header */}
+  <div class="mb-12">
+    <p class="font-mono text-xs uppercase tracking-widest text-ink-faint mb-3">Trading Journal</p>
+    <h1 class="font-display text-5xl lg:text-6xl font-bold leading-tight">
+      交易<span class="text-terracotta italic">日记</span>
+    </h1>
+    <p class="mt-4 text-ink-light max-w-xl">快速记录交易操作与选股建议，复盘回顾，分类管理。</p>
+  </div>
+
+  {/* Stats bar */}
+  <div id="stats-bar" class="grid grid-cols-3 gap-6 mb-12 reveal">
+    <div class="text-center py-4">
+      <div class="font-display text-4xl font-bold text-terracotta" id="stat-weekly">0</div>
+      <div class="font-mono text-xs uppercase tracking-wider text-ink-faint mt-1">本周交易</div>
+    </div>
+    <div class="text-center py-4 border-x border-ink/[0.06]">
+      <div class="font-display text-4xl font-bold" id="stat-total">0</div>
+      <div class="font-mono text-xs uppercase tracking-wider text-ink-faint mt-1">总记录</div>
+    </div>
+    <div class="text-center py-4">
+      <div class="font-display text-4xl font-bold text-sage" id="stat-tips">0</div>
+      <div class="font-mono text-xs uppercase tracking-wider text-ink-faint mt-1">朋友建议</div>
+    </div>
+  </div>
+
+  <div class="h-px bg-ink/[0.08] mb-12"></div>
+
+  {/* Quick add form */}
+  <div class="bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-12 reveal">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-display text-xl font-bold">快速记录</h2>
+      <div class="flex gap-2">
+        <button id="tab-trade" class="font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors">交易</button>
+        <button id="tab-tip" class="font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors">建议</button>
+      </div>
+    </div>
+
+    <form id="entry-form" class="space-y-5">
+      <input type="hidden" id="entry-type" value="trade" />
+      <input type="hidden" id="edit-id" value="" />
+
+      {/* Row 1: Stock code + name + direction */}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">股票代码</label>
+          <input id="stock-code" type="text" placeholder="600519" maxlength="6"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+        <div>
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">名称</label>
+          <input id="stock-name" type="text" placeholder="贵州茅台"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+        <div id="direction-group">
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">方向</label>
+          <div class="flex gap-2">
+            <button type="button" data-dir="buy" class="dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors">买入</button>
+            <button type="button" data-dir="sell" class="dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors">卖出</button>
+          </div>
+          <input type="hidden" id="direction" value="buy" />
+        </div>
+      </div>
+
+      {/* Row 2: Price + quantity + friend */}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">价格</label>
+          <input id="price" type="number" step="0.01" placeholder="0.00"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+        <div>
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">数量</label>
+          <input id="quantity" type="number" placeholder="100"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+        <div id="friend-group" class="hidden">
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">来源/朋友</label>
+          <input id="friend" type="text" placeholder="老王"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+      </div>
+
+      {/* Row 3: Reason */}
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">理由 / 备注</label>
+        <textarea id="reason" rows="2" placeholder="买入理由、技术形态、朋友建议内容..."
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors resize-none"></textarea>
+      </div>
+
+      {/* Row 4: Tags */}
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">标签（逗号分隔）</label>
+        <input id="tags" type="text" placeholder="突破, 蓝筹, MACD金叉"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+
+      {/* Row 5: Image upload */}
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">截图</label>
+        <div id="drop-zone"
+          class="border-2 border-dashed border-ink/10 rounded-lg p-6 text-center cursor-pointer hover:border-terracotta/30 transition-colors">
+          <p class="text-ink-faint text-sm">点击或拖拽图片到此处</p>
+          <p class="text-ink-faint text-xs mt-1">支持 JPG / PNG，可多张</p>
+          <input type="file" id="image-input" accept="image/*" multiple class="hidden" />
+        </div>
+        <div id="image-preview" class="flex gap-3 mt-3 flex-wrap"></div>
+      </div>
+
+      {/* Submit */}
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="bg-ink text-cream px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-ink/90 transition-colors">
+          保存记录
+        </button>
+        <button type="button" id="cancel-edit" class="hidden px-6 py-2.5 rounded-lg text-sm font-medium text-ink-light bg-cream border border-ink/10 hover:bg-cream-dark transition-colors">
+          取消
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {/* Filters */}
+  <div class="flex flex-wrap items-center gap-3 mb-8 reveal">
+    <span class="font-mono text-xs text-ink-faint">筛选</span>
+    <button data-filter="all" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream">全部</button>
+    <button data-filter="trade" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">交易</button>
+    <button data-filter="tip" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">建议</button>
+    <div class="flex-1"></div>
+    <button id="btn-export" class="font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors" title="导出 JSON">
+      导出
+    </button>
+    <label class="font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors cursor-pointer" title="导入 JSON">
+      导入
+      <input type="file" id="import-input" accept=".json" class="hidden" />
+    </label>
+  </div>
+
+  {/* Entry list */}
+  <div id="entry-list" class="space-y-4">
+    <div id="empty-state" class="text-center py-20 text-ink-faint">
+      <p class="font-display text-2xl mb-2">还没有记录</p>
+      <p class="text-sm">在上方添加你的第一笔交易或朋友建议</p>
+    </div>
+  </div>
+
+  {/* Image lightbox */}
+  <div id="lightbox" class="fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm hidden items-center justify-center p-8 cursor-pointer">
+    <img id="lightbox-img" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg" />
+  </div>
+
+</BaseLayout>
+
+<script>
+  // --- IndexedDB module (inlined) ---
+  const DB_NAME = 'TradingJournal';
+  const DB_VERSION = 1;
+  const STORE_NAME = 'entries';
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          store.createIndex('createdAt', 'createdAt', { unique: false });
+          store.createIndex('stockCode', 'stockCode', { unique: false });
+          store.createIndex('type', 'type', { unique: false });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function dbTx(mode, fn) {
+    return openDB().then(db => new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, mode);
+      const store = transaction.objectStore(STORE_NAME);
+      const result = fn(store);
+      if (result && result.onsuccess !== undefined) {
+        result.onsuccess = () => resolve(result.result);
+        result.onerror = () => reject(result.error);
+      } else {
+        transaction.oncomplete = () => resolve(result);
+        transaction.onerror = () => reject(transaction.error);
+      }
+    }));
+  }
+
+  function addEntry(entry) {
+    const data = {
+      ...entry,
+      id: crypto.randomUUID(),
+      createdAt: entry.createdAt || new Date().toISOString(),
+    };
+    return dbTx('readwrite', store => store.put(data)).then(() => data);
+  }
+
+  function updateEntry(entry) {
+    return dbTx('readwrite', store => store.put(entry)).then(() => entry);
+  }
+
+  function deleteEntry(id) {
+    return dbTx('readwrite', store => store.delete(id));
+  }
+
+  function getAllEntries() {
+    return dbTx('readonly', store => {
+      return new Promise((resolve) => {
+        const results = [];
+        const index = store.index('createdAt');
+        const req = index.openCursor(null, 'prev');
+        req.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            results.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(results);
+          }
+        };
+      });
+    });
+  }
+
+  async function exportJSON() {
+    const entries = await getAllEntries();
+    const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trading-journal-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importJSON(file) {
+    const text = await file.text();
+    const entries = JSON.parse(text);
+    if (!Array.isArray(entries)) throw new Error('Invalid format');
+    for (const entry of entries) {
+      await dbTx('readwrite', store => store.put(entry));
+    }
+    return entries.length;
+  }
+
+  function getStockLinks(code) {
+    if (!code) return {};
+    const c = code.replace(/\D/g, '');
+    const ths = `https://stockpage.10jqka.com.cn/${c}/`;
+    const prefix = c.startsWith('6') ? 'sh'
+      : c.startsWith('4') || c.startsWith('8') ? 'bj' : 'sz';
+    const east = `https://quote.eastmoney.com/${prefix}${c}.html`;
+    return { ths, east };
+  }
+
+  // --- State ---
+  let allEntries = [];
+  let currentFilter = 'all';
+  let editId = null;
+  let pendingImages = [];
+
+  // --- DOM refs ---
+  const form = document.getElementById('entry-form');
+  const tabTrade = document.getElementById('tab-trade');
+  const tabTip = document.getElementById('tab-tip');
+  const entryType = document.getElementById('entry-type');
+  const directionGroup = document.getElementById('direction-group');
+  const friendGroup = document.getElementById('friend-group');
+  const dirBtns = document.querySelectorAll('.dir-btn');
+  const directionInput = document.getElementById('direction');
+  const dropZone = document.getElementById('drop-zone');
+  const imageInput = document.getElementById('image-input');
+  const imagePreview = document.getElementById('image-preview');
+  const entryList = document.getElementById('entry-list');
+  const emptyState = document.getElementById('empty-state');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const btnExport = document.getElementById('btn-export');
+  const importInput = document.getElementById('import-input');
+  const cancelBtn = document.getElementById('cancel-edit');
+
+  // --- Type tabs ---
+  function setTab(type) {
+    entryType.value = type;
+    if (type === 'trade') {
+      tabTrade.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors';
+      tabTip.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors';
+      directionGroup.classList.remove('hidden');
+      friendGroup.classList.add('hidden');
+    } else {
+      tabTip.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors';
+      tabTrade.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors';
+      directionGroup.classList.add('hidden');
+      friendGroup.classList.remove('hidden');
+    }
+  }
+
+  tabTrade.addEventListener('click', () => setTab('trade'));
+  tabTip.addEventListener('click', () => setTab('tip'));
+
+  // --- Direction buttons ---
+  dirBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = btn.dataset.dir;
+      directionInput.value = dir;
+      dirBtns.forEach(b => {
+        if (b.dataset.dir === dir) {
+          b.className = dir === 'buy'
+            ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
+            : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors';
+        } else {
+          b.className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+        }
+      });
+    });
+  });
+
+  // --- Image upload ---
+  function handleFiles(files) {
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) continue;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        pendingImages.push(e.target.result);
+        renderImagePreview();
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function renderImagePreview() {
+    imagePreview.innerHTML = pendingImages.map((src, i) => `
+      <div class="relative group">
+        <img src="${src}" class="w-20 h-20 object-cover rounded-lg border border-ink/10" />
+        <button type="button" data-rm="${i}"
+          class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-terracotta text-cream text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+          &times;
+        </button>
+      </div>
+    `).join('');
+
+    imagePreview.querySelectorAll('[data-rm]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        pendingImages.splice(parseInt(btn.dataset.rm), 1);
+        renderImagePreview();
+      });
+    });
+  }
+
+  dropZone.addEventListener('click', () => imageInput.click());
+  imageInput.addEventListener('change', () => handleFiles(imageInput.files));
+
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-terracotta/30'); });
+  dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-terracotta/30'); });
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-terracotta/30');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  // --- Form submit ---
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = document.getElementById('stock-code').value.trim();
+    const name = document.getElementById('stock-name').value.trim();
+    if (!code) { document.getElementById('stock-code').focus(); return; }
+
+    const entry = {
+      type: entryType.value,
+      stockCode: code,
+      stockName: name,
+      direction: entryType.value === 'trade' ? directionInput.value : undefined,
+      price: parseFloat(document.getElementById('price').value) || 0,
+      quantity: parseInt(document.getElementById('quantity').value) || 0,
+      reason: document.getElementById('reason').value.trim(),
+      friend: entryType.value === 'tip' ? document.getElementById('friend').value.trim() : undefined,
+      tags: document.getElementById('tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
+      images: pendingImages,
+    };
+
+    if (editId) {
+      const existing = allEntries.find(e => e.id === editId);
+      await updateEntry({ ...existing, ...entry });
+      editId = null;
+      cancelBtn.classList.add('hidden');
+    } else {
+      await addEntry(entry);
+    }
+
+    form.reset();
+    pendingImages = [];
+    renderImagePreview();
+    setTab('trade');
+    directionInput.value = 'buy';
+    dirBtns[0].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors';
+    dirBtns[1].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+
+    await refreshList();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    editId = null;
+    form.reset();
+    pendingImages = [];
+    renderImagePreview();
+    cancelBtn.classList.add('hidden');
+    setTab('trade');
+  });
+
+  // --- Filter ---
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      filterBtns.forEach(b => {
+        b.className = b === btn
+          ? 'filter-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream'
+          : 'filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark';
+      });
+      renderEntries();
+    });
+  });
+
+  // --- Export / Import ---
+  btnExport.addEventListener('click', exportJSON);
+  importInput.addEventListener('change', async () => {
+    const file = importInput.files[0];
+    if (!file) return;
+    const count = await importJSON(file);
+    alert(`已导入 ${count} 条记录`);
+    importInput.value = '';
+    await refreshList();
+  });
+
+  // --- Lightbox ---
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+  });
+
+  function openLightbox(src) {
+    lightboxImg.src = src;
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+  }
+
+  // --- Render ---
+  function getStockLinksForCode(code) {
+    if (!code) return {};
+    const c = code.replace(/\D/g, '');
+    return getStockLinks(c);
+  }
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
+    const hours = d.getHours().toString().padStart(2, '0');
+    const mins = d.getMinutes().toString().padStart(2, '0');
+    return `${month}-${day} ${hours}:${mins}`;
+  }
+
+  function formatGroupDate(iso) {
+    const d = new Date(iso);
+    const now = new Date();
+    const diff = Math.floor((now - d) / 86400000);
+    if (diff === 0) return '今天';
+    if (diff === 1) return '昨天';
+    if (diff < 7) return `${diff}天前`;
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+
+  function renderEntries() {
+    const filtered = currentFilter === 'all'
+      ? allEntries
+      : allEntries.filter(e => e.type === currentFilter);
+
+    if (filtered.length === 0) {
+      emptyState.classList.remove('hidden');
+      entryList.innerHTML = '';
+      entryList.appendChild(emptyState);
+      return;
+    }
+
+    emptyState.classList.add('hidden');
+
+    // Group by date
+    const groups = {};
+    for (const entry of filtered) {
+      const key = new Date(entry.createdAt).toISOString().slice(0, 10);
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(entry);
+    }
+
+    let html = '';
+    for (const [dateKey, entries] of Object.entries(groups)) {
+      html += `<div class="mb-6">`;
+      html += `<div class="font-mono text-xs text-ink-faint mb-3">${formatGroupDate(dateKey)}</div>`;
+
+      for (const entry of entries) {
+        const isTrade = entry.type === 'trade';
+        const isBuy = entry.direction === 'buy';
+        const links = getStockLinksForCode(entry.stockCode);
+
+        const accentClass = isTrade
+          ? (isBuy ? 'border-l-sage' : 'border-l-terracotta')
+          : 'border-l-ink-faint';
+
+        const badge = isTrade
+          ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full ${isBuy ? 'bg-sage/10 text-sage' : 'bg-terracotta/10 text-terracotta'}">${isBuy ? '买入' : '卖出'}</span>`
+          : `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink-light">${entry.friend || '建议'}</span>`;
+
+        const priceLine = entry.price
+          ? `<span class="font-mono text-sm text-ink">${entry.price.toFixed(2)}</span>`
+          : '';
+        const qtyLine = entry.quantity
+          ? `<span class="font-mono text-xs text-ink-faint ml-2">&times;${entry.quantity}</span>`
+          : '';
+        const amountLine = (entry.price && entry.quantity)
+          ? `<span class="font-mono text-xs text-ink-faint ml-3">= ${(entry.price * entry.quantity).toFixed(0)}</span>`
+          : '';
+
+        const stockLinksHtml = entry.stockCode ? `
+          <div class="flex gap-2 mt-2">
+            <a href="${links.ths}" target="_blank" rel="noopener"
+              class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">
+              ${entry.stockCode} 同花顺 &nearr;
+            </a>
+            <a href="${links.east}" target="_blank" rel="noopener"
+              class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">
+              东方财富 &nearr;
+            </a>
+          </div>
+        ` : '';
+
+        const tagsHtml = entry.tags?.length
+          ? `<div class="flex flex-wrap gap-1.5 mt-2">${entry.tags.map(t => `<span class="font-mono text-xs px-2.5 py-0.5 rounded-full bg-cream text-ink-light">${t}</span>`).join('')}</div>`
+          : '';
+
+        const imagesHtml = entry.images?.length
+          ? `<div class="flex gap-2 mt-3 flex-wrap">${entry.images.map(src =>
+              `<img src="${src}" class="w-16 h-16 object-cover rounded-lg border border-ink/10 cursor-pointer hover:opacity-80 transition-opacity entry-img" />`
+            ).join('')}</div>`
+          : '';
+
+        const reasonHtml = entry.reason
+          ? `<p class="text-sm text-ink-light mt-2 leading-relaxed">${entry.reason}</p>`
+          : '';
+
+        html += `
+          <div class="bg-paper rounded-xl p-5 shadow-sm border border-ink/[0.04] border-l-2 ${accentClass} hover:shadow-md transition-shadow group">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                ${badge}
+                ${entry.stockName ? `<span class="font-medium text-sm">${entry.stockName}</span>` : ''}
+                ${entry.stockCode ? `<span class="font-mono text-xs text-ink-faint">${entry.stockCode}</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-ink-faint">${formatDate(entry.createdAt)}</span>
+                <button data-edit="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="编辑">编辑</button>
+                <button data-del="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="删除">&times;</button>
+              </div>
+            </div>
+            <div class="mt-2 flex items-center">
+              ${priceLine}${qtyLine}${amountLine}
+            </div>
+            ${reasonHtml}
+            ${stockLinksHtml}
+            ${tagsHtml}
+            ${imagesHtml}
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+
+    entryList.innerHTML = html;
+
+    // Bind events
+    entryList.querySelectorAll('[data-del]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (confirm('确定删除这条记录？')) {
+          await deleteEntry(btn.dataset.del);
+          await refreshList();
+        }
+      });
+    });
+
+    entryList.querySelectorAll('[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const entry = allEntries.find(e => e.id === btn.dataset.edit);
+        if (!entry) return;
+        editId = entry.id;
+        setTab(entry.type);
+        document.getElementById('stock-code').value = entry.stockCode || '';
+        document.getElementById('stock-name').value = entry.stockName || '';
+        document.getElementById('price').value = entry.price || '';
+        document.getElementById('quantity').value = entry.quantity || '';
+        document.getElementById('reason').value = entry.reason || '';
+        document.getElementById('tags').value = (entry.tags || []).join(', ');
+        document.getElementById('friend').value = entry.friend || '';
+        if (entry.type === 'trade') {
+          directionInput.value = entry.direction || 'buy';
+          dirBtns.forEach(b => {
+            const isActive = b.dataset.dir === entry.direction;
+            b.className = isActive
+              ? (entry.direction === 'buy'
+                  ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
+                  : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors')
+              : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+          });
+        }
+        pendingImages = [...(entry.images || [])];
+        renderImagePreview();
+        cancelBtn.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    entryList.querySelectorAll('.entry-img').forEach(img => {
+      img.addEventListener('click', () => openLightbox(img.src));
+    });
+  }
+
+  function updateStats() {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 86400000);
+    const weekly = allEntries.filter(e => e.type === 'trade' && new Date(e.createdAt) >= weekAgo).length;
+    const tips = allEntries.filter(e => e.type === 'tip').length;
+
+    document.getElementById('stat-weekly').textContent = weekly;
+    document.getElementById('stat-total').textContent = allEntries.length;
+    document.getElementById('stat-tips').textContent = tips;
+  }
+
+  async function refreshList() {
+    allEntries = await getAllEntries();
+    updateStats();
+    renderEntries();
+  }
+
+  // --- Init ---
+  refreshList();
+</script>
+
+<style>
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] { -moz-appearance: textfield; }
+</style>

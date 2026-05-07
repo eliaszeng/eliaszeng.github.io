@@ -103,5 +103,75 @@
     "file": "W2_Day7_Review.ipynb",
     "tags": ["Week 2", "复习"],
     "date": "2026-04-30"
+  },
+  {
+    "title": "W3 Day1 — GNN 原理",
+    "description": "消息传递范式; GCN/GAT/GraphSAGE 手写实现; 过平滑实验; Cora 三模型对比",
+    "file": "W3_Day1_GNN_Principles.ipynb",
+    "tags": ["Week 3", "GNN", "PyG"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day2 — GNN 进阶 + 图数据增强",
+    "description": "DropEdge; 节点 Masking; 子图采样; 半监督学习; GNN 表达力 (WL-test/GIN); 图纸数据试跑",
+    "file": "W3_Day2_GNN_Advanced_Augmentation.ipynb",
+    "tags": ["Week 3", "GNN", "图增强", "半监督"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day3 — 合成数据消融+终版",
+    "description": "难度感知筛选; 消融实验设计(比例×条件×筛选×backbone); Docker化; README生成",
+    "file": "W3_Day3_Synthetic_Ablation.ipynb",
+    "tags": ["Week 3", "合成数据", "消融", "Docker"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day4 — LLM 架构深入",
+    "description": "MHA/MQA/GQA 实现与显存分析; RoPE/ALiBi 位置编码; LLaMA 组件; Scaling Laws",
+    "file": "W3_Day4_LLM_Architecture.ipynb",
+    "tags": ["Week 3", "LLM", "Attention", "RoPE"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day5 — 知识工程 + Prompt Engineering",
+    "description": "OWL/KG/SPARQL; ICL/CoT/结构化Prompt; Few-shot设计; Ontology-based Prompting复现",
+    "file": "W3_Day5_Knowledge_Prompt.ipynb",
+    "tags": ["Week 3", "知识工程", "Prompt", "本体"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day6 — VLM + 语音系统",
+    "description": "LLaVA架构; Whisper; VAD/TTS; 语音链路; GPU显存计算; DDP原理",
+    "file": "W3_Day6_VLM_Voice.ipynb",
+    "tags": ["Week 3", "VLM", "Whisper", "DDP"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W3 Day7 — P1总复盘 + GNN工程深挖",
+    "description": "白板复盘(Autograd/Transformer/CLIP/Diffusion/GAT); GNN图纸项目工程深挖; Active Learning",
+    "file": "W3_Day7_P1_Review_GNN_Eng.ipynb",
+    "tags": ["Week 3", "复盘", "GNN", "工程"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W4 Day1 — P1查漏补缺",
+    "description": "W1-W3知识清单自评; 薄弱点定向实验; Autograd/Transformer/CLIP/Diffusion/GNN深挖",
+    "file": "W4_Day1_P1_Review.ipynb",
+    "tags": ["Week 4", "查漏补缺", "复习"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W4 Day2 — 前沿趋势 + P2预习",
+    "description": "MoE/长上下文/Reasoning/Agent趋势; Embedding基础; FAISS入门; RAG概念预习",
+    "file": "W4_Day2_Frontier_FAISS.ipynb",
+    "tags": ["Week 4", "MoE", "FAISS", "前沿"],
+    "date": "2026-05-07"
+  },
+  {
+    "title": "W4 Day3 — 数据库 + 消息队列基础",
+    "description": "SQL JOIN/窗口函数/索引; Redis数据结构+缓存策略; Kafka核心概念; LeetCode SQL",
+    "file": "W4_Day3_SQL_Redis_Kafka.ipynb",
+    "tags": ["Week 4", "SQL", "Redis", "Kafka"],
+    "date": "2026-05-07"
   }
 ]
