@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Transformer 架构详解",
+    "description": "从 Attention Is All You Need 原论文出发，拆解 Transformer 的核心机制",
+    "type": "markdown",
+    "tags": ["Transformer", "NLP", "基础"],
+    "url": "#",
+    "date": "2026-04-15",
+    "category": "大模型基础"
+  },
+  {
+    "title": "LoRA 微调实验记录",
+    "description": "使用 LoRA 对 Llama 进行微调的完整实验过程和结论",
+    "type": "notebook",
+    "tags": ["LoRA", "Fine-tuning", "实验"],
+    "url": "#",
+    "date": "2026-04-20",
+    "category": "微调实践"
+  },
+  {
+    "title": "RAG 系统设计笔记",
+    "description": "检索增强生成系统的架构设计、向量数据库选型和优化策略",
+    "type": "markdown",
+    "tags": ["RAG", "向量数据库", "架构"],
+    "url": "#",
+    "date": "2026-05-01",
+    "category": "应用开发"
+  },
+  {
+    "title": "Attention 可视化分析",
+    "description": "通过可视化手段理解 Multi-Head Attention 的工作原理",
+    "type": "notebook",
+    "tags": ["Attention", "可视化", "PyTorch"],
+    "url": "#",
+    "date": "2026-05-03",
+    "category": "大模型基础"
+  },
+  {
+    "title": "LLM 推理优化综述",
+    "description": "量化、KV Cache、Speculative Decoding 等推理加速技术整理",
+    "type": "pdf",
+    "tags": ["推理优化", "量化", "KV Cache"],
+    "url": "#",
+    "date": "2026-05-05",
+    "category": "工程优化"
+  }
+]

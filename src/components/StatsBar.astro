@@ -6,17 +6,17 @@ const total = projects.length;
 const avgProgress = Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / total);
 ---
 
-<div class="grid grid-cols-3 gap-4 mb-10">
-  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
-    <div class="text-3xl font-bold font-mono text-neon-blue">{active}</div>
-    <div class="text-xs font-mono text-gray-500 mt-1">ACTIVE PROJECTS</div>
+<div class="grid grid-cols-3 gap-6 mb-14">
+  <div class="reveal text-center py-6">
+    <div class="font-display text-5xl font-bold text-terracotta mb-2">{active}</div>
+    <div class="text-xs font-mono text-ink-faint tracking-[0.2em] uppercase">进行中</div>
   </div>
-  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
-    <div class="text-3xl font-bold font-mono text-neon-purple">{total}</div>
-    <div class="text-xs font-mono text-gray-500 mt-1">TOTAL PROJECTS</div>
+  <div class="reveal text-center py-6 border-x border-ink/[0.06]">
+    <div class="font-display text-5xl font-bold text-ink mb-2">{total}</div>
+    <div class="text-xs font-mono text-ink-faint tracking-[0.2em] uppercase">全部项目</div>
   </div>
-  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
-    <div class="text-3xl font-bold font-mono text-neon-green">{avgProgress}%</div>
-    <div class="text-xs font-mono text-gray-500 mt-1">AVG PROGRESS</div>
+  <div class="reveal text-center py-6">
+    <div class="font-display text-5xl font-bold text-sage mb-2">{avgProgress}%</div>
+    <div class="text-xs font-mono text-ink-faint tracking-[0.2em] uppercase">平均进度</div>
   </div>
 </div>

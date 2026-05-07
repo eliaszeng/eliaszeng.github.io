@@ -5,6 +5,14 @@ interface Props {
 }
 
 const { title, activeNav } = Astro.props;
+
+const navItems = [
+  { href: '/', label: '首页', key: 'home' },
+  { href: '/projects', label: '项目', key: 'projects' },
+  { href: '/news', label: '资讯', key: 'news' },
+  { href: '/learning', label: '学习', key: 'learning' },
+  { href: '/starred', label: '关注', key: 'starred' },
+];
 ---
 
 <!doctype html>
@@ -14,49 +22,78 @@ const { title, activeNav } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Elias Zeng - 项目追踪与科技资讯" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,500;0,6..72,700;1,6..72,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
-  <body class="bg-gray-950 text-gray-100 min-h-screen font-sans">
-    <!-- Background grid -->
-    <div class="fixed inset-0 bg-[linear-gradient(rgba(0,212,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,212,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none"></div>
+  <body class="bg-cream text-ink min-h-screen font-body">
+    <!-- Subtle paper texture overlay -->
+    <div class="fixed inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E'); background-size: 256px;"></div>
 
     <!-- Nav -->
-    <nav class="relative z-10 border-b border-gray-800/50 backdrop-blur-sm bg-gray-950/80 sticky top-0">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="text-xl font-bold font-mono text-neon-blue hover:text-neon-purple transition-colors">
-          &lt;elias /&gt;
+    <nav class="relative z-10 border-b border-ink/5 sticky top-0 bg-cream/90 backdrop-blur-md">
+      <div class="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
+        <a href="/" class="font-display text-2xl font-bold text-ink tracking-tight hover:text-terracotta transition-colors duration-300">
+          Elias Zeng
         </a>
-        <div class="flex gap-6 text-sm font-mono">
-          <a href="/" class:list={["transition-colors", activeNav === 'home' ? "text-neon-blue" : "text-gray-400 hover:text-white"]}>首页</a>
-          <a href="/projects" class:list={["transition-colors", activeNav === 'projects' ? "text-neon-blue" : "text-gray-400 hover:text-white"]}>项目</a>
-          <a href="/news" class:list={["transition-colors", activeNav === 'news' ? "text-neon-blue" : "text-gray-400 hover:text-white"]}>资讯</a>
+        <div class="flex gap-8 text-sm font-body font-medium tracking-wide">
+          {navItems.map(item => (
+            <a
+              href={item.href}
+              class:list={[
+                "relative py-1 transition-colors duration-300",
+                activeNav === item.key
+                  ? "text-terracotta"
+                  : "text-ink-light hover:text-ink"
+              ]}
+            >
+              {item.label}
+              {activeNav === item.key && (
+                <span class="absolute bottom-0 left-0 w-full h-[2px] bg-terracotta rounded-full" />
+              )}
+            </a>
+          ))}
         </div>
       </div>
     </nav>
 
     <!-- Main -->
-    <main class="relative z-10 max-w-6xl mx-auto px-6 py-10">
+    <main class="relative z-10 max-w-5xl mx-auto px-8 py-16">
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="relative z-10 border-t border-gray-800/50 mt-20">
-      <div class="max-w-6xl mx-auto px-6 py-6 text-center text-gray-600 text-sm font-mono">
-        Built with Astro & Tailwind · {new Date().getFullYear()} Elias Zeng
+    <footer class="relative z-10 border-t border-ink/5 mt-24">
+      <div class="max-w-5xl mx-auto px-8 py-8 flex items-center justify-between text-ink-faint text-sm">
+        <span>&copy; {new Date().getFullYear()} Elias Zeng</span>
+        <span class="font-mono text-xs tracking-wider">built with astro + tailwind</span>
       </div>
     </footer>
+
+    <!-- Scroll reveal script -->
+    <script>
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const delay = el.dataset.delay || '0';
+            setTimeout(() => {
+              el.classList.add('revealed');
+              el.style.opacity = '1';
+              el.style.transform = 'translateY(0)';
+            }, parseInt(delay) * 100);
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal').forEach((el, i) => {
+        const htmlEl = el as HTMLElement;
+        htmlEl.style.opacity = '0';
+        htmlEl.style.transform = 'translateY(20px)';
+        htmlEl.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+        htmlEl.dataset.delay = String(i % 6);
+        observer.observe(htmlEl);
+      });
+    </script>
   </body>
 </html>
-
-<style is:global>
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    font-family: 'Inter', system-ui, sans-serif;
-  }
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
-</style>

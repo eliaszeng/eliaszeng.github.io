@@ -8,20 +8,23 @@ const sorted = [...projects].sort((a, b) => statusOrder.indexOf(a.status) - stat
 ---
 
 <BaseLayout title="项目看板 - Elias Zeng" activeNav="projects">
-  <h1 class="text-2xl font-bold text-white mb-2 font-mono">项目看板</h1>
-  <p class="text-gray-400 mb-10">所有项目的进度和状态一览</p>
+  <header class="mb-12">
+    <p class="reveal font-mono text-xs text-ink-faint tracking-[0.3em] uppercase mb-4">PROJECTS</p>
+    <h1 class="reveal font-display text-5xl font-bold text-ink tracking-tight mb-4">项目看板</h1>
+    <p class="reveal text-ink-light text-lg">所有项目的进度和状态一览</p>
+  </header>
 
   <!-- Filter tabs -->
-  <div class="flex gap-3 mb-8">
-    <button class="filter-btn active px-4 py-1.5 rounded-full text-sm font-mono border border-neon-blue/50 text-neon-blue bg-neon-blue/10" data-filter="all">全部</button>
-    <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-mono border border-gray-700 text-gray-400 hover:border-gray-500 transition-colors" data-filter="active">进行中</button>
-    <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-mono border border-gray-700 text-gray-400 hover:border-gray-500 transition-colors" data-filter="planned">计划中</button>
-    <button class="filter-btn px-4 py-1.5 rounded-full text-sm font-mono border border-gray-700 text-gray-400 hover:border-gray-500 transition-colors" data-filter="completed">已完成</button>
+  <div class="reveal flex gap-3 mb-10">
+    <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium bg-ink text-cream transition-all duration-300" data-filter="all">全部</button>
+    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-cream-dark text-ink-light hover:bg-ink/[0.08] transition-all duration-300" data-filter="active">进行中</button>
+    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-cream-dark text-ink-light hover:bg-ink/[0.08] transition-all duration-300" data-filter="planned">计划中</button>
+    <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium bg-cream-dark text-ink-light hover:bg-ink/[0.08] transition-all duration-300" data-filter="completed">已完成</button>
   </div>
 
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="project-grid">
-    {sorted.map(project => (
-      <div class="project-item" data-status={project.status}>
+    {sorted.map((project, i) => (
+      <div class="reveal project-item" data-status={project.status} style={`transition-delay: ${i * 80}ms`}>
         <ProjectCard {...project} />
       </div>
     ))}
@@ -31,20 +34,27 @@ const sorted = [...projects].sort((a, b) => statusOrder.indexOf(a.status) - stat
 <script>
   document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      // Update active button
       document.querySelectorAll('.filter-btn').forEach(b => {
-        b.classList.remove('active', 'border-neon-blue/50', 'text-neon-blue', 'bg-neon-blue/10');
-        b.classList.add('border-gray-700', 'text-gray-400');
+        b.classList.remove('active', 'bg-ink', 'text-cream');
+        b.classList.add('bg-cream-dark', 'text-ink-light');
       });
-      btn.classList.add('active', 'border-neon-blue/50', 'text-neon-blue', 'bg-neon-blue/10');
-      btn.classList.remove('border-gray-700', 'text-gray-400');
+      btn.classList.add('active', 'bg-ink', 'text-cream');
+      btn.classList.remove('bg-cream-dark', 'text-ink-light');
 
-      const filter = btn.dataset.filter;
+      const filter = (btn as HTMLElement).dataset.filter;
       document.querySelectorAll('.project-item').forEach(item => {
-        if (filter === 'all' || item.dataset.status === filter) {
-          item.style.display = '';
+        const el = item as HTMLElement;
+        if (filter === 'all' || el.dataset.status === filter) {
+          el.style.display = '';
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(12px)';
+          requestAnimationFrame(() => {
+            el.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          });
         } else {
-          item.style.display = 'none';
+          el.style.display = 'none';
         }
       });
     });

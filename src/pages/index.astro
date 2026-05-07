@@ -7,50 +7,73 @@ import projects from '../data/projects.json';
 const activeProjects = projects.filter(p => p.status === 'active');
 ---
 
-<BaseLayout title="Elias Zeng - Dashboard" activeNav="home">
-  <!-- Hero -->
-  <section class="mb-16">
-    <div class="flex items-center gap-4 mb-6">
-      <div class="w-16 h-16 rounded-full bg-gradient-to-br from-neon-blue to-neon-purple flex items-center justify-center text-2xl font-bold font-mono animate-float">
-        E
-      </div>
+<BaseLayout title="Elias Zeng" activeNav="home">
+  <!-- Hero — asymmetric editorial layout -->
+  <section class="mb-20">
+    <div class="grid lg:grid-cols-[1fr_0.6fr] gap-12 items-end">
       <div>
-        <h1 class="text-3xl font-bold text-white">Elias Zeng</h1>
-        <p class="text-gray-400 font-mono text-sm">builder · learner · explorer</p>
+        <p class="reveal font-mono text-xs text-ink-faint tracking-[0.3em] uppercase mb-6">个人仪表盘 / 持续更新</p>
+        <h1 class="reveal font-display text-6xl lg:text-7xl font-bold text-ink leading-[0.95] mb-8 tracking-tight">
+          正在做的<br/>
+          <span class="text-terracotta italic">一些事情</span>
+        </h1>
+        <p class="reveal text-ink-light text-lg leading-relaxed max-w-lg">
+          关注大模型应用、交易系统、以及各种有意思的 side project。这里记录进度，也沉淀思考。
+        </p>
+      </div>
+      <div class="reveal hidden lg:block">
+        <div class="aspect-[3/4] bg-cream-dark rounded-2xl overflow-hidden relative">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center">
+              <div class="font-display text-[120px] font-bold text-ink/[0.06] leading-none">E</div>
+              <div class="font-mono text-xs text-ink-faint tracking-[0.2em] mt-2">EST. 2026</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <p class="text-gray-300 leading-relaxed max-w-2xl">
-      在这里记录我正在做的事情。关注大模型应用、交易系统、以及各种有意思的 side project。
-    </p>
   </section>
+
+  <!-- Divider -->
+  <div class="reveal h-px bg-ink/[0.08] mb-16"></div>
 
   <StatsBar />
 
   <!-- Active Projects -->
   <section>
-    <h2 class="text-xl font-semibold text-white mb-6 font-mono flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-      当前进行中
-    </h2>
+    <div class="flex items-baseline justify-between mb-8">
+      <h2 class="font-display text-3xl font-bold text-ink">进行中</h2>
+      <a href="/projects" class="text-sm font-mono text-ink-faint hover:text-terracotta transition-colors tracking-wider">
+        查看全部 &rarr;
+      </a>
+    </div>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {activeProjects.map(project => (
-        <ProjectCard {...project} />
+      {activeProjects.map((project, i) => (
+        <div class="reveal" style={`transition-delay: ${i * 100}ms`}>
+          <ProjectCard {...project} />
+        </div>
       ))}
     </div>
   </section>
 
   <!-- Quick links -->
-  <section class="mt-16">
-    <h2 class="text-xl font-semibold text-white mb-6 font-mono">快速链接</h2>
+  <section class="mt-20">
     <div class="flex flex-wrap gap-4">
-      <a href="/projects" class="px-5 py-3 bg-gray-900/60 border border-gray-800 rounded-lg text-sm font-mono text-gray-300 hover:border-neon-blue/40 hover:text-neon-blue transition-all">
-        所有项目 →
+      <a href="/news" class="reveal group flex items-center gap-3 px-6 py-4 bg-paper rounded-xl border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+        <span class="font-display text-lg font-bold text-ink group-hover:text-terracotta transition-colors">科技资讯</span>
+        <span class="text-ink-faint group-hover:text-terracotta transition-colors">&rarr;</span>
       </a>
-      <a href="/news" class="px-5 py-3 bg-gray-900/60 border border-gray-800 rounded-lg text-sm font-mono text-gray-300 hover:border-neon-purple/40 hover:text-neon-purple transition-all">
-        科技资讯 →
+      <a href="/learning" class="reveal group flex items-center gap-3 px-6 py-4 bg-paper rounded-xl border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+        <span class="font-display text-lg font-bold text-ink group-hover:text-sage transition-colors">学习笔记</span>
+        <span class="text-ink-faint group-hover:text-sage transition-colors">&rarr;</span>
       </a>
-      <a href="https://github.com/eliaszeng" target="_blank" class="px-5 py-3 bg-gray-900/60 border border-gray-800 rounded-lg text-sm font-mono text-gray-300 hover:border-neon-pink/40 hover:text-neon-pink transition-all">
-        GitHub ↗
+      <a href="/starred" class="reveal group flex items-center gap-3 px-6 py-4 bg-paper rounded-xl border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+        <span class="font-display text-lg font-bold text-ink group-hover:text-ink transition-colors">关注列表</span>
+        <span class="text-ink-faint group-hover:text-ink transition-colors">&rarr;</span>
+      </a>
+      <a href="https://github.com/eliaszeng" target="_blank" class="reveal group flex items-center gap-3 px-6 py-4 bg-paper rounded-xl border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+        <span class="font-mono text-sm text-ink-light group-hover:text-ink transition-colors">GitHub</span>
+        <span class="text-ink-faint text-sm group-hover:text-ink transition-colors">↗</span>
       </a>
     </div>
   </section>

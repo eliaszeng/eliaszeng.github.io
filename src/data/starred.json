@@ -1,0 +1,66 @@
+[
+  {
+    "name": "ollama/ollama",
+    "description": "Get up and running with Llama 3, Mistral, Gemma 2, and other large language models locally",
+    "language": "Go",
+    "stars": 128000,
+    "category": "AI 工具",
+    "url": "https://github.com/ollama/ollama"
+  },
+  {
+    "name": "langchain-ai/langchain",
+    "description": "Build context-aware reasoning applications",
+    "language": "Python",
+    "stars": 98000,
+    "category": "AI 框架",
+    "url": "https://github.com/langchain-ai/langchain"
+  },
+  {
+    "name": "anthropics/anthropic-cookbook",
+    "description": "A collection of notebooks/recipes showcasing some fun and effective ways of using Claude",
+    "language": "Jupyter Notebook",
+    "stars": 12000,
+    "category": "AI 框架",
+    "url": "https://github.com/anthropics/anthropic-cookbook"
+  },
+  {
+    "name": "vllm-project/vllm",
+    "description": "A high-throughput and memory-efficient inference and serving engine for LLMs",
+    "language": "Python",
+    "stars": 45000,
+    "category": "推理引擎",
+    "url": "https://github.com/vllm-project/vllm"
+  },
+  {
+    "name": "ggerganov/llama.cpp",
+    "description": "LLM inference in C/C++",
+    "language": "C++",
+    "stars": 72000,
+    "category": "推理引擎",
+    "url": "https://github.com/ggerganov/llama.cpp"
+  },
+  {
+    "name": "huggingface/transformers",
+    "description": "State-of-the-art Machine Learning for Pytorch, TensorFlow, and JAX",
+    "language": "Python",
+    "stars": 140000,
+    "category": "AI 框架",
+    "url": "https://github.com/huggingface/transformers"
+  },
+  {
+    "name": "mlc-ai/mlc-llm",
+    "description": "Universal LLM Deployment Engine with ML Compilation",
+    "language": "Python",
+    "stars": 19000,
+    "category": "推理引擎",
+    "url": "https://github.com/mlc-ai/mlc-llm"
+  },
+  {
+    "name": "stanford-oval/storm",
+    "description": "An LLM-powered knowledge curation system that researches a topic and generates full-length reports with citations",
+    "language": "Python",
+    "stars": 22000,
+    "category": "AI 应用",
+    "url": "https://github.com/stanford-oval/storm"
+  }
+]

@@ -4,37 +4,45 @@ import news from '../data/news.json';
 ---
 
 <BaseLayout title="科技资讯 - Elias Zeng" activeNav="news">
-  <div class="flex items-center justify-between mb-2">
-    <h1 class="text-2xl font-bold text-white font-mono">大模型资讯</h1>
-    <span class="text-xs font-mono text-gray-600">来源: Hacker News</span>
-  </div>
-  <p class="text-gray-400 mb-10">聚焦 LLM / AI 领域的最新动态，每日自动更新</p>
+  <header class="mb-12">
+    <p class="reveal font-mono text-xs text-ink-faint tracking-[0.3em] uppercase mb-4">AI / LLM</p>
+    <h1 class="reveal font-display text-5xl font-bold text-ink tracking-tight mb-4">大模型资讯</h1>
+    <p class="reveal text-ink-light text-lg">聚焦 LLM / AI 领域的最新动态，每日自动更新</p>
+  </header>
 
-  <div class="space-y-4">
+  <div class="reveal flex items-center gap-2 mb-8">
+    <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>
+    <span class="text-xs font-mono text-ink-faint tracking-wider">来源: Hacker News &middot; 每日 10:00 更新</span>
+  </div>
+
+  <div class="space-y-1">
     {news.map((item, i) => (
       <a
         href={item.url}
         target="_blank"
-        class="group block bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-neon-purple/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.06)]"
+        class="reveal group flex items-start gap-6 py-5 px-4 -mx-4 rounded-xl hover:bg-paper transition-all duration-300"
+        style={`transition-delay: ${i * 60}ms`}
       >
-        <div class="flex items-start justify-between gap-4">
-          <div class="flex-1">
-            <div class="flex items-center gap-3 mb-2">
-              <span class="text-xs font-mono text-gray-600">#{i + 1}</span>
-              <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-neon-purple/10 text-neon-purple border border-neon-purple/20">
-                {item.source}
-              </span>
-              <span class="text-xs font-mono text-gray-600">{item.date}</span>
-            </div>
-            <h3 class="text-white group-hover:text-neon-purple transition-colors font-medium leading-relaxed">
-              {item.title}
-            </h3>
-          </div>
-          <div class="flex flex-col items-end gap-1 shrink-0 text-xs font-mono text-gray-500">
-            <span>▲ {item.points}</span>
-            <span>💬 {item.comments}</span>
+        <span class="font-display text-4xl font-bold text-ink/[0.08] shrink-0 w-12 text-right leading-none pt-1">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <div class="flex-1 min-w-0">
+          <h3 class="font-display text-lg font-bold text-ink group-hover:text-terracotta transition-colors duration-300 leading-snug mb-2">
+            {item.title}
+          </h3>
+          <div class="flex items-center gap-4 text-xs font-mono text-ink-faint">
+            <span>{item.source}</span>
+            <span>&middot;</span>
+            <span>{item.date}</span>
+            <span>&middot;</span>
+            <span class="text-terracotta">{item.points} points</span>
+            <span>&middot;</span>
+            <span>{item.comments} comments</span>
           </div>
         </div>
+        <span class="text-ink-faint group-hover:text-terracotta group-hover:translate-x-1 transition-all duration-300 shrink-0 pt-1">
+          &rarr;
+        </span>
       </a>
     ))}
   </div>
