@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Google Chrome silently installs a 4 GB AI model on your device without consent",
+    "url": "https://www.thatprivacyguy.com/blog/chrome-silent-nano-install/",
+    "source": "Hacker News",
+    "date": "2026-05-05",
+    "points": 1653,
+    "comments": 1093
+  },
+  {
+    "title": "Accelerating Gemma 4: faster inference with multi-token prediction drafters",
+    "url": "https://blog.google/innovation-and-ai/technology/developers-tools/multi-token-prediction-gemma-4/",
+    "source": "Hacker News",
+    "date": "2026-05-06",
+    "points": 659,
+    "comments": 320
+  },
+  {
+    "title": "Zuckerberg 'Personally Authorized and Encouraged' Meta's Copyright Infringement",
+    "url": "https://variety.com/2026/digital/news/meta-ai-mark-zuckerberg-copyright-infringement-lawsuit-publishers-scott-turow-1236738383/",
+    "source": "Hacker News",
+    "date": "2026-05-06",
+    "points": 464,
+    "comments": 413
+  },
+  {
+    "title": "Higher usage limits for Claude and a compute deal with SpaceX",
+    "url": "https://www.anthropic.com/news/higher-limits-spacex",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 389,
+    "comments": 337
+  },
+  {
+    "title": "A Theory of Deep Learning",
+    "url": "https://elonlit.com/scrivings/a-theory-of-deep-learning/",
+    "source": "Hacker News",
+    "date": "2026-05-06",
+    "points": 128,
+    "comments": 28
+  },
+  {
+    "title": "Wiki Builder: Skill to Build LLM Knowledge Bases",
+    "url": "https://academy.dair.ai/blog/wiki-builder-claude-code-plugin",
+    "source": "Hacker News",
+    "date": "2026-05-03",
+    "points": 119,
+    "comments": 15
+  },
+  {
+    "title": "Learning the Integral of a Diffusion Model",
+    "url": "https://sander.ai/2026/05/06/flow-maps.html",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 95,
+    "comments": 17
+  },
+  {
+    "title": "SpaceXAI will provide Anthropic with access to Colossus 1",
+    "url": "https://twitter.com/xai/status/2052060350770515978",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 51,
+    "comments": 14
+  },
+  {
+    "title": "Visualize Any Hugging Face Model",
+    "url": "https://hfviewer.com/",
+    "source": "Hacker News",
+    "date": "2026-05-06",
+    "points": 32,
+    "comments": 3
+  },
+  {
+    "title": "Firm solar and storage costs fall to $54/MWh, says IRENA",
+    "url": "https://www.pv-magazine.com/2026/05/06/firm-solar-and-storage-costs-fall-to-54-mwh-says-irena/",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 18,
+    "comments": 0
+  },
+  {
+    "title": "SQLite Is a Library of Congress Recommended Storage Format",
+    "url": "https://sqlite.org/locrsf.html",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 16,
+    "comments": 3
+  },
+  {
+    "title": "Anthropic raises Claude Code usage limits, credits new deal with SpaceX",
+    "url": "https://arstechnica.com/ai/2026/05/anthropic-raises-claude-code-usage-limits-credits-new-deal-with-spacex/",
+    "source": "Hacker News",
+    "date": "2026-05-07",
+    "points": 8,
+    "comments": 3
+  }
+]

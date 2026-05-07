@@ -1,0 +1,22 @@
+---
+import projects from '../data/projects.json';
+
+const active = projects.filter(p => p.status === 'active').length;
+const total = projects.length;
+const avgProgress = Math.round(projects.reduce((sum, p) => sum + p.progress, 0) / total);
+---
+
+<div class="grid grid-cols-3 gap-4 mb-10">
+  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
+    <div class="text-3xl font-bold font-mono text-neon-blue">{active}</div>
+    <div class="text-xs font-mono text-gray-500 mt-1">ACTIVE PROJECTS</div>
+  </div>
+  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
+    <div class="text-3xl font-bold font-mono text-neon-purple">{total}</div>
+    <div class="text-xs font-mono text-gray-500 mt-1">TOTAL PROJECTS</div>
+  </div>
+  <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-5 text-center">
+    <div class="text-3xl font-bold font-mono text-neon-green">{avgProgress}%</div>
+    <div class="text-xs font-mono text-gray-500 mt-1">AVG PROGRESS</div>
+  </div>
+</div>

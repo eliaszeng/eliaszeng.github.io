@@ -1,0 +1,31 @@
+[
+  {
+    "id": "bilibili-trading",
+    "name": "B站交易思想蒸馏",
+    "description": "批量抓取B站交易类视频，转写为文字，用Claude提取并综合交易思想",
+    "status": "active",
+    "progress": 65,
+    "tags": ["Python", "Claude API", "NLP"],
+    "link": "https://github.com/eliaszeng/bilibili-trading-distill",
+    "startDate": "2026-03-01"
+  },
+  {
+    "id": "github-pages",
+    "name": "个人仪表盘",
+    "description": "项目进度跟踪 + 大模型科技资讯聚合的个人主页",
+    "status": "active",
+    "progress": 30,
+    "tags": ["Astro", "Tailwind", "GitHub Actions"],
+    "link": "https://eliaszeng.github.io",
+    "startDate": "2026-05-07"
+  },
+  {
+    "id": "llm-fine-tune",
+    "name": "LLM微调实验",
+    "description": "探索大模型微调方法论，记录实验过程和结论",
+    "status": "planned",
+    "progress": 0,
+    "tags": ["LLM", "Fine-tuning", "PyTorch"],
+    "startDate": "2026-06-01"
+  }
+]

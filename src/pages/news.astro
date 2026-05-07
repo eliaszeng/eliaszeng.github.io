@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import news from '../data/news.json';
+---
+
+<BaseLayout title="科技资讯 - Elias Zeng" activeNav="news">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-2xl font-bold text-white font-mono">大模型资讯</h1>
+    <span class="text-xs font-mono text-gray-600">来源: Hacker News</span>
+  </div>
+  <p class="text-gray-400 mb-10">聚焦 LLM / AI 领域的最新动态，每日自动更新</p>
+
+  <div class="space-y-4">
+    {news.map((item, i) => (
+      <a
+        href={item.url}
+        target="_blank"
+        class="group block bg-gray-900/60 border border-gray-800 rounded-xl p-5 hover:border-neon-purple/40 transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.06)]"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-gray-600">#{i + 1}</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-neon-purple/10 text-neon-purple border border-neon-purple/20">
+                {item.source}
+              </span>
+              <span class="text-xs font-mono text-gray-600">{item.date}</span>
+            </div>
+            <h3 class="text-white group-hover:text-neon-purple transition-colors font-medium leading-relaxed">
+              {item.title}
+            </h3>
+          </div>
+          <div class="flex flex-col items-end gap-1 shrink-0 text-xs font-mono text-gray-500">
+            <span>▲ {item.points}</span>
+            <span>💬 {item.comments}</span>
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
