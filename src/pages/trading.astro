@@ -67,7 +67,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      {/* Row 2: Price + quantity + friend */}
+      {/* Row 2: Price + quantity + time */}
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <label class="font-mono text-xs text-ink-faint block mb-1.5">价格</label>
@@ -79,11 +79,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <input id="quantity" type="number" placeholder="100"
             class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
         </div>
-        <div id="friend-group" class="hidden">
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">来源/朋友</label>
-          <input id="friend" type="text" placeholder="老王"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
+        <div>
+          <label class="font-mono text-xs text-ink-faint block mb-1.5">交易时间</label>
+          <input id="trade-time" type="datetime-local"
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
         </div>
+      </div>
+
+      {/* Row 2.5: Friend (tip only) */}
+      <div id="friend-group" class="hidden">
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">来源 / 朋友</label>
+        <input id="friend" type="text" placeholder="老王"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
       </div>
 
       {/* Row 3: Reason */}
@@ -373,6 +380,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const name = document.getElementById('stock-name').value.trim();
     if (!code) { document.getElementById('stock-code').focus(); return; }
 
+    const timeVal = document.getElementById('trade-time').value;
     const entry = {
       type: entryType.value,
       stockCode: code,
@@ -384,6 +392,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       friend: entryType.value === 'tip' ? document.getElementById('friend').value.trim() : undefined,
       tags: document.getElementById('tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
       images: pendingImages,
+      createdAt: timeVal ? new Date(timeVal).toISOString() : new Date().toISOString(),
     };
 
     if (editId) {
@@ -606,6 +615,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         document.getElementById('reason').value = entry.reason || '';
         document.getElementById('tags').value = (entry.tags || []).join(', ');
         document.getElementById('friend').value = entry.friend || '';
+        if (entry.createdAt) {
+          const d = new Date(entry.createdAt);
+          const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+          document.getElementById('trade-time').value = local;
+        }
         if (entry.type === 'trade') {
           directionInput.value = entry.direction || 'buy';
           dirBtns.forEach(b => {
