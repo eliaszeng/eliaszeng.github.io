@@ -2,8 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import starred from '../data/starred.json';
 
-const categories = [...new Set(starred.map(s => s.category))];
-
 const langColors: Record<string, string> = {
   Python: 'bg-blue-400',
   Go: 'bg-cyan-400',
@@ -11,6 +9,8 @@ const langColors: Record<string, string> = {
   'Jupyter Notebook': 'bg-orange-400',
   TypeScript: 'bg-blue-500',
   Rust: 'bg-orange-500',
+  HTML: 'bg-red-400',
+  TeX: 'bg-green-500',
 };
 
 function formatStars(n: number): string {
@@ -23,63 +23,45 @@ function formatStars(n: number): string {
   <header class="mb-12">
     <p class="reveal font-mono text-xs text-ink-faint tracking-[0.3em] uppercase mb-4">STARRED</p>
     <h1 class="reveal font-display text-5xl font-bold text-ink tracking-tight mb-4">关注列表</h1>
-    <p class="reveal text-ink-light text-lg">值得关注的开源项目和资源</p>
+    <p class="reveal text-ink-light text-lg">GitHub Star 列表 &middot; {starred.length} 个项目</p>
   </header>
 
-  <!-- Stats -->
-  <div class="reveal flex items-center gap-8 mb-10">
-    <div class="flex items-center gap-2">
-      <span class="font-display text-3xl font-bold text-terracotta">{starred.length}</span>
-      <span class="text-sm text-ink-faint">个项目</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="font-display text-3xl font-bold text-ink">{categories.length}</span>
-      <span class="text-sm text-ink-faint">个分类</span>
-    </div>
+  <div class="space-y-3">
+    {starred.map((repo, i) => (
+      <a
+        href={repo.url}
+        target="_blank"
+        class="reveal group flex items-start gap-5 bg-paper rounded-xl p-5 border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
+        style={`transition-delay: ${i * 80}ms`}
+      >
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-3 mb-2">
+            <h3 class="font-mono text-sm font-medium text-ink group-hover:text-terracotta transition-colors duration-300">
+              {repo.name}
+            </h3>
+            <span class="text-ink-faint group-hover:text-terracotta group-hover:translate-x-0.5 transition-all duration-300 text-sm">
+              &rarr;
+            </span>
+          </div>
+          <p class="text-sm text-ink-light leading-relaxed mb-3">
+            {repo.description || 'No description'}
+          </p>
+          <div class="flex items-center gap-4">
+            {repo.language && (
+              <span class="flex items-center gap-1.5 text-xs font-mono text-ink-faint">
+                <span class={`w-2.5 h-2.5 rounded-full ${langColors[repo.language] || 'bg-gray-400'}`}></span>
+                {repo.language}
+              </span>
+            )}
+            <span class="flex items-center gap-1 text-xs font-mono text-ink-faint">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
+              </svg>
+              {formatStars(repo.stars)}
+            </span>
+          </div>
+        </div>
+      </a>
+    ))}
   </div>
-
-  {categories.map((category, ci) => (
-    <section class="mb-12">
-      <h2 class="reveal font-display text-2xl font-bold text-ink mb-6 flex items-center gap-3">
-        <span class="w-8 h-px bg-ink/20"></span>
-        {category}
-      </h2>
-      <div class="space-y-3">
-        {starred.filter(s => s.category === category).map((repo, i) => (
-          <a
-            href={repo.url}
-            target="_blank"
-            class="reveal group flex items-start gap-5 bg-paper rounded-xl p-5 border border-ink/[0.04] hover:shadow-md transition-all duration-300 hover:-translate-y-0.5"
-            style={`transition-delay: ${(ci * 3 + i) * 60}ms`}
-          >
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-3 mb-2">
-                <h3 class="font-mono text-sm font-medium text-ink group-hover:text-terracotta transition-colors duration-300">
-                  {repo.name}
-                </h3>
-                <span class="text-ink-faint group-hover:text-terracotta group-hover:translate-x-0.5 transition-all duration-300 text-sm">
-                  &rarr;
-                </span>
-              </div>
-              <p class="text-sm text-ink-light leading-relaxed mb-3">
-                {repo.description}
-              </p>
-              <div class="flex items-center gap-4">
-                <span class="flex items-center gap-1.5 text-xs font-mono text-ink-faint">
-                  <span class={`w-2.5 h-2.5 rounded-full ${langColors[repo.language] || 'bg-gray-400'}`}></span>
-                  {repo.language}
-                </span>
-                <span class="flex items-center gap-1 text-xs font-mono text-ink-faint">
-                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
-                  </svg>
-                  {formatStars(repo.stars)}
-                </span>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  ))}
 </BaseLayout>
