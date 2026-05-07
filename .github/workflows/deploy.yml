@@ -25,6 +25,13 @@ jobs:
           node-version: 20
 
       - run: npm ci
+
+      - name: Generate auth-config from secret
+        if: env.AUTH_PASSWORD_HASH != ''
+        env:
+          AUTH_PASSWORD_HASH: ${{ secrets.AUTH_PASSWORD_HASH }}
+        run: echo "{\"hash\":\"$AUTH_PASSWORD_HASH\"}" > public/auth-config.json
+
       - run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
