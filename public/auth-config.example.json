@@ -1,0 +1,4 @@
+{
+  "_comment": "复制此文件为 auth-config.json，把 hash 替换为你的密码 SHA-256。生成方法：echo -n '你的密码' | shasum -a 256",
+  "hash": "REPLACE_WITH_SHA256_OF_YOUR_PASSWORD"
+}

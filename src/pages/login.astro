@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="登录 — 交易日记" activeNav="trading">
+  <div class="flex items-center justify-center" style="min-height: 60vh;">
+    <div class="bg-paper rounded-2xl p-8 shadow-sm border border-ink/[0.04] w-full max-w-sm">
+      <h1 class="font-display text-2xl font-bold text-center mb-2">交易日记</h1>
+      <p class="text-ink-faint text-sm text-center mb-8">输入密码继续访问</p>
+
+      <form id="login-form" class="space-y-4">
+        <div>
+          <input id="pw" type="password" placeholder="密码" autofocus
+            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+        </div>
+        <p id="err" class="text-terracotta text-xs hidden">密码错误</p>
+        <p id="cfg-err" class="text-terracotta text-xs hidden">配置缺失：未找到 /auth-config.json</p>
+        <button type="submit"
+          class="w-full bg-ink text-cream py-3 rounded-lg text-sm font-medium hover:bg-ink/90 transition-colors">
+          进入
+        </button>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // 密码哈希从本地配置文件加载（auth-config.json 已加入 .gitignore，不会推送到 git）
+  // 配置文件放在 public/auth-config.json，构建时被复制到站点根目录
+  // 模板：public/auth-config.example.json
+  let HASH = null;
+
+  async function loadConfig() {
+    try {
+      const res = await fetch('/auth-config.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('not found');
+      const data = await res.json();
+      HASH = data.hash;
+    } catch (e) {
+      document.getElementById('cfg-err').classList.remove('hidden');
+      document.getElementById('pw').disabled = true;
+    }
+  }
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  if (sessionStorage.getItem('tj_auth') === '1') {
+    location.href = '/trading';
+  }
+
+  loadConfig();
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!HASH) return;
+    const pw = document.getElementById('pw').value;
+    const h = await sha256(pw);
+    if (h === HASH) {
+      sessionStorage.setItem('tj_auth', '1');
+      location.href = '/trading';
+    } else {
+      const err = document.getElementById('err');
+      err.classList.remove('hidden');
+      document.getElementById('pw').value = '';
+      document.getElementById('pw').focus();
+    }
+  });
+</script>

@@ -132,7 +132,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 
   {/* Filters */}
-  <div class="flex flex-wrap items-center gap-3 mb-8 reveal">
+  <div class="flex flex-wrap items-center gap-3 mb-4 reveal">
     <span class="font-mono text-xs text-ink-faint">筛选</span>
     <button data-filter="all" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream">全部</button>
     <button data-filter="trade" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">交易</button>
@@ -145,6 +145,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       导入
       <input type="file" id="import-input" accept=".json" class="hidden" />
     </label>
+  </div>
+
+  {/* Date range filter */}
+  <div class="flex flex-wrap items-center gap-3 mb-8 reveal">
+    <span class="font-mono text-xs text-ink-faint">日期</span>
+    <input id="date-from" type="date"
+      class="bg-cream border border-ink/10 rounded-lg px-3 py-1 text-xs font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+    <span class="font-mono text-xs text-ink-faint">至</span>
+    <input id="date-to" type="date"
+      class="bg-cream border border-ink/10 rounded-lg px-3 py-1 text-xs font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+    <button id="date-today" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">今天</button>
+    <button id="date-week" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近7天</button>
+    <button id="date-month" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近30天</button>
+    <button id="date-clear" type="button" class="font-mono text-xs px-3 py-1 rounded-full text-ink-faint hover:text-terracotta">清除</button>
   </div>
 
   {/* Entry list */}
@@ -161,6 +175,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 
 </BaseLayout>
+
+<script>
+  if (sessionStorage.getItem('tj_auth') !== '1') {
+    location.href = '/login';
+  }
+</script>
 
 <script>
   // --- IndexedDB module (inlined) ---
@@ -189,14 +209,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return openDB().then(db => new Promise((resolve, reject) => {
       const transaction = db.transaction(STORE_NAME, mode);
       const store = transaction.objectStore(STORE_NAME);
-      const result = fn(store);
-      if (result && result.onsuccess !== undefined) {
-        result.onsuccess = () => resolve(result.result);
-        result.onerror = () => reject(result.error);
-      } else {
-        transaction.oncomplete = () => resolve(result);
-        transaction.onerror = () => reject(transaction.error);
+      let captured;
+      // 让 fn 决定怎么 resolve（通过 setResult），避免对 IDBRequest / Promise 做模糊判断
+      const setResult = (v) => { captured = v; };
+      const ret = fn(store, setResult);
+      // 如果 fn 直接返回了 IDBRequest，也兼容
+      if (ret && typeof ret.onsuccess !== 'undefined' && captured === undefined) {
+        ret.onsuccess = () => { captured = ret.result; };
+        ret.onerror = () => reject(ret.error);
       }
+      transaction.oncomplete = () => resolve(captured !== undefined ? captured : ret);
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error || new Error('Transaction aborted'));
     }));
   }
 
@@ -218,21 +242,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function getAllEntries() {
-    return dbTx('readonly', store => {
-      return new Promise((resolve) => {
-        const results = [];
-        const index = store.index('createdAt');
-        const req = index.openCursor(null, 'prev');
-        req.onsuccess = (e) => {
-          const cursor = e.target.result;
-          if (cursor) {
-            results.push(cursor.value);
-            cursor.continue();
-          } else {
-            resolve(results);
-          }
-        };
-      });
+    return dbTx('readonly', (store, setResult) => {
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const list = req.result || [];
+        // 显式按 createdAt 倒序排序（不依赖 IndexedDB 索引）
+        // 修复编辑后排序错乱的 bug
+        list.sort((a, b) => {
+          const ta = new Date(a.createdAt).getTime() || 0;
+          const tb = new Date(b.createdAt).getTime() || 0;
+          return tb - ta;
+        });
+        setResult(list);
+      };
     });
   }
 
@@ -272,6 +294,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   let currentFilter = 'all';
   let editId = null;
   let pendingImages = [];
+  let isSubmitting = false; // 防止重复保存
+  let dateFrom = ''; // 日期筛选起
+  let dateTo = ''; // 日期筛选止
 
   // --- DOM refs ---
   const form = document.getElementById('entry-form');
@@ -376,43 +401,64 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   // --- Form submit ---
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const code = document.getElementById('stock-code').value.trim();
-    const name = document.getElementById('stock-name').value.trim();
-    if (!code) { document.getElementById('stock-code').focus(); return; }
+    if (isSubmitting) return; // 防止重复保存（快速双击 / 回车多次）
+    isSubmitting = true;
 
-    const timeVal = document.getElementById('trade-time').value;
-    const entry = {
-      type: entryType.value,
-      stockCode: code,
-      stockName: name,
-      direction: entryType.value === 'trade' ? directionInput.value : undefined,
-      price: parseFloat(document.getElementById('price').value) || 0,
-      quantity: parseInt(document.getElementById('quantity').value) || 0,
-      reason: document.getElementById('reason').value.trim(),
-      friend: entryType.value === 'tip' ? document.getElementById('friend').value.trim() : undefined,
-      tags: document.getElementById('tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
-      images: pendingImages,
-      createdAt: timeVal ? new Date(timeVal).toISOString() : new Date().toISOString(),
-    };
-
-    if (editId) {
-      const existing = allEntries.find(e => e.id === editId);
-      await updateEntry({ ...existing, ...entry });
-      editId = null;
-      cancelBtn.classList.add('hidden');
-    } else {
-      await addEntry(entry);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.textContent : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '保存中...';
+      submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
     }
 
-    form.reset();
-    pendingImages = [];
-    renderImagePreview();
-    setTab('trade');
-    directionInput.value = 'buy';
-    dirBtns[0].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors';
-    dirBtns[1].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+    try {
+      const code = document.getElementById('stock-code').value.trim();
+      const name = document.getElementById('stock-name').value.trim();
+      if (!code) { document.getElementById('stock-code').focus(); return; }
 
-    await refreshList();
+      const timeVal = document.getElementById('trade-time').value;
+      const entry = {
+        type: entryType.value,
+        stockCode: code,
+        stockName: name,
+        direction: entryType.value === 'trade' ? directionInput.value : undefined,
+        price: parseFloat(document.getElementById('price').value) || 0,
+        quantity: parseInt(document.getElementById('quantity').value) || 0,
+        reason: document.getElementById('reason').value.trim(),
+        friend: entryType.value === 'tip' ? document.getElementById('friend').value.trim() : undefined,
+        tags: document.getElementById('tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
+        images: pendingImages,
+      };
+
+      if (editId) {
+        const existing = allEntries.find(e => e.id === editId);
+        entry.createdAt = timeVal ? new Date(timeVal).toISOString() : existing.createdAt;
+        await updateEntry({ ...existing, ...entry });
+        editId = null;
+        cancelBtn.classList.add('hidden');
+      } else {
+        entry.createdAt = timeVal ? new Date(timeVal).toISOString() : new Date().toISOString();
+        await addEntry(entry);
+      }
+
+      form.reset();
+      pendingImages = [];
+      renderImagePreview();
+      setTab('trade');
+      directionInput.value = 'buy';
+      dirBtns[0].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors';
+      dirBtns[1].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+
+      await refreshList();
+    } finally {
+      isSubmitting = false;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+      }
+    }
   });
 
   cancelBtn.addEventListener('click', () => {
@@ -435,6 +481,48 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       });
       renderEntries();
     });
+  });
+
+  // --- Date range filter ---
+  const dateFromInput = document.getElementById('date-from');
+  const dateToInput = document.getElementById('date-to');
+  function ymd(d) {
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+  function applyDateFilter() {
+    dateFrom = dateFromInput.value;
+    dateTo = dateToInput.value;
+    renderEntries();
+  }
+  dateFromInput.addEventListener('change', applyDateFilter);
+  dateToInput.addEventListener('change', applyDateFilter);
+
+  document.getElementById('date-today').addEventListener('click', () => {
+    const today = ymd(new Date());
+    dateFromInput.value = today;
+    dateToInput.value = today;
+    applyDateFilter();
+  });
+  document.getElementById('date-week').addEventListener('click', () => {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 6 * 86400000);
+    dateFromInput.value = ymd(weekAgo);
+    dateToInput.value = ymd(now);
+    applyDateFilter();
+  });
+  document.getElementById('date-month').addEventListener('click', () => {
+    const now = new Date();
+    const monthAgo = new Date(now.getTime() - 29 * 86400000);
+    dateFromInput.value = ymd(monthAgo);
+    dateToInput.value = ymd(now);
+    applyDateFilter();
+  });
+  document.getElementById('date-clear').addEventListener('click', () => {
+    dateFromInput.value = '';
+    dateToInput.value = '';
+    applyDateFilter();
   });
 
   // --- Export / Import ---
@@ -487,9 +575,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   function renderEntries() {
-    const filtered = currentFilter === 'all'
+    let filtered = currentFilter === 'all'
       ? allEntries
       : allEntries.filter(e => e.type === currentFilter);
+
+    // 日期范围筛选
+    if (dateFrom) {
+      const fromTs = new Date(dateFrom + 'T00:00:00').getTime();
+      filtered = filtered.filter(e => new Date(e.createdAt).getTime() >= fromTs);
+    }
+    if (dateTo) {
+      const toTs = new Date(dateTo + 'T23:59:59.999').getTime();
+      filtered = filtered.filter(e => new Date(e.createdAt).getTime() <= toTs);
+    }
 
     if (filtered.length === 0) {
       emptyState.classList.remove('hidden');
@@ -565,19 +663,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         html += `
           <div class="bg-paper rounded-xl p-5 shadow-sm border border-ink/[0.04] border-l-2 ${accentClass} hover:shadow-md transition-shadow group">
-            <div class="flex items-start justify-between">
-              <div class="flex items-center gap-3">
-                ${badge}
-                ${entry.stockName ? `<span class="font-medium text-sm">${entry.stockName}</span>` : ''}
-                ${entry.stockCode ? `<span class="font-mono text-xs text-ink-faint">${entry.stockCode}</span>` : ''}
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
+                  ${entry.stockName ? `<span class="font-display text-2xl font-bold tracking-tight text-ink">${entry.stockName}</span>` : ''}
+                  ${entry.stockCode ? `<span class="font-mono text-sm font-bold px-2 py-0.5 rounded bg-terracotta/10 text-terracotta">${entry.stockCode}</span>` : ''}
+                </div>
+                <div class="flex items-center gap-3">
+                  ${badge}
+                  <span class="font-mono text-xs text-ink-faint">${formatDate(entry.createdAt)}</span>
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="font-mono text-xs text-ink-faint">${formatDate(entry.createdAt)}</span>
+              <div class="flex items-center gap-2 shrink-0">
                 <button data-edit="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="编辑">编辑</button>
                 <button data-del="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="删除">&times;</button>
               </div>
             </div>
-            <div class="mt-2 flex items-center">
+            <div class="mt-3 flex items-center">
               ${priceLine}${qtyLine}${amountLine}
             </div>
             ${reasonHtml}
