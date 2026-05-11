@@ -19,16 +19,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   {/* API Settings Panel */}
   <div id="settings-panel" class="hidden bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-8 reveal">
-    <h3 class="font-display text-lg font-bold mb-4">AI 接口配置</h3>
+    <h3 class="font-display text-lg font-bold mb-1">AI 接口配置</h3>
+    <p class="text-xs text-ink-faint mb-4">兼容 OpenAI 格式的多模态 API 均可（DeepSeek / 智谱 / 月之暗面 / SiliconFlow 等）</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">API Endpoint</label>
-        <input id="cfg-endpoint" type="text" placeholder="https://ark.cn-beijing.volces.com/api/v3"
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">Base URL</label>
+        <input id="cfg-endpoint" type="text" placeholder="https://api.siliconflow.cn/v1"
           class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
       </div>
       <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">Model / Endpoint ID</label>
-        <input id="cfg-model" type="text" placeholder="ep-xxxxxxxxxx"
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">模型名称</label>
+        <input id="cfg-model" type="text" placeholder="Qwen/Qwen2.5-VL-72B-Instruct"
           class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
       </div>
       <div>
@@ -813,7 +814,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   refreshList();
 
   // ==========================================
-  // API Settings
+  // API Settings (any OpenAI-compatible multimodal API)
   // ==========================================
   const cfgEndpoint = document.getElementById('cfg-endpoint');
   const cfgModel = document.getElementById('cfg-model');
