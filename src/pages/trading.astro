@@ -20,7 +20,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   {/* API Settings Panel */}
   <div id="settings-panel" class="hidden bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-8 reveal">
     <h3 class="font-display text-lg font-bold mb-1">AI 接口配置</h3>
-    <p class="text-xs text-ink-faint mb-4">兼容 OpenAI 格式的多模态 API 均可（DeepSeek / 智谱 / 月之暗面 / SiliconFlow 等）</p>
+    <p class="text-xs text-ink-faint mb-4">兼容 OpenAI 格式的多模态 API 均可（DeepSeek / 智谱 / 月之暗面 / SiliconFlow 等）。也可运行 <code class="bg-cream-dark px-1 rounded">node scripts/ai-proxy.mjs</code> 读取本地 Claude 配置，Base URL 填 <code class="bg-cream-dark px-1 rounded">http://localhost:3456</code> 即可，无需填 Key。</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="font-mono text-xs text-ink-faint block mb-1.5">Base URL</label>
