@@ -11,6 +11,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       交易<span class="text-terracotta italic">日记</span>
     </h1>
     <p class="mt-4 text-ink-light max-w-xl">快速记录交易操作与选股建议，复盘回顾，分类管理。</p>
+    <button id="toggle-settings" class="mt-3 inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors" title="AI 设置">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      AI 设置
+    </button>
+  </div>
+
+  {/* API Settings Panel */}
+  <div id="settings-panel" class="hidden bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-8 reveal">
+    <h3 class="font-display text-lg font-bold mb-4">AI 接口配置</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">API Endpoint</label>
+        <input id="cfg-endpoint" type="text" placeholder="https://ark.cn-beijing.volces.com/api/v3"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">Model / Endpoint ID</label>
+        <input id="cfg-model" type="text" placeholder="ep-xxxxxxxxxx"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">API Key</label>
+        <input id="cfg-key" type="password" placeholder="sk-..."
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">CORS 代理（可选）</label>
+        <input id="cfg-proxy" type="text" placeholder="https://corsproxy.io/?"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button id="btn-save-cfg" type="button" class="bg-ink text-cream px-5 py-2 rounded-lg text-sm font-medium hover:bg-ink/90 transition-colors">保存配置</button>
+      <button id="btn-test-cfg" type="button" class="px-5 py-2 rounded-lg text-sm font-medium text-ink-light bg-cream border border-ink/10 hover:bg-cream-dark transition-colors">测试连接</button>
+    </div>
+    <div id="cfg-status" class="mt-3 text-sm hidden"></div>
   </div>
 
   {/* Stats bar */}
@@ -51,6 +87,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <label class="font-mono text-xs text-ink-faint block mb-1.5">股票代码</label>
           <input id="stock-code" type="text" placeholder="600519" maxlength="6"
             class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+          <div id="stock-info" class="hidden mt-1.5 font-mono text-xs text-ink-faint"></div>
         </div>
         <div>
           <label class="font-mono text-xs text-ink-faint block mb-1.5">名称</label>
@@ -117,6 +154,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <input type="file" id="image-input" accept="image/*" multiple class="hidden" />
         </div>
         <div id="image-preview" class="flex gap-3 mt-3 flex-wrap"></div>
+        <div id="ai-actions" class="hidden mt-3">
+          <button id="btn-ai-analyze" type="button" class="inline-flex items-center gap-2 bg-terracotta text-cream px-5 py-2 rounded-lg text-sm font-medium hover:bg-terracotta/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <svg id="ai-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.5L12 20l-6.364-6.364a5 5 0 010-7.072z"></path></svg>
+            <span id="ai-btn-text">AI 识别</span>
+          </button>
+        </div>
+        <div id="ai-status" class="hidden mt-2 text-sm"></div>
       </div>
 
       {/* Submit */}
@@ -385,6 +429,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         renderImagePreview();
       });
     });
+
+    // Update AI button visibility
+    if (typeof updateAiButtonVisibility === 'function') updateAiButtonVisibility();
   }
 
   dropZone.addEventListener('click', () => imageInput.click());
@@ -764,6 +811,329 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   // --- Init ---
   refreshList();
+
+  // ==========================================
+  // API Settings
+  // ==========================================
+  const cfgEndpoint = document.getElementById('cfg-endpoint');
+  const cfgModel = document.getElementById('cfg-model');
+  const cfgKey = document.getElementById('cfg-key');
+  const cfgProxy = document.getElementById('cfg-proxy');
+  const cfgStatus = document.getElementById('cfg-status');
+
+  function loadConfig() {
+    cfgEndpoint.value = localStorage.getItem('tj_ark_endpoint') || '';
+    cfgModel.value = localStorage.getItem('tj_ark_model') || '';
+    cfgKey.value = localStorage.getItem('tj_ark_key') || '';
+    cfgProxy.value = localStorage.getItem('tj_cors_proxy') || '';
+  }
+  loadConfig();
+
+  function isConfigured() {
+    return !!(cfgEndpoint.value.trim() && cfgKey.value.trim() && cfgModel.value.trim());
+  }
+
+  function showCfgStatus(msg, isError) {
+    cfgStatus.textContent = msg;
+    cfgStatus.className = `mt-3 text-sm ${isError ? 'text-terracotta' : 'text-sage'}`;
+    cfgStatus.classList.remove('hidden');
+  }
+
+  // Toggle settings panel
+  document.getElementById('toggle-settings').addEventListener('click', () => {
+    const panel = document.getElementById('settings-panel');
+    panel.classList.toggle('hidden');
+  });
+
+  // Save config
+  document.getElementById('btn-save-cfg').addEventListener('click', () => {
+    localStorage.setItem('tj_ark_endpoint', cfgEndpoint.value.trim());
+    localStorage.setItem('tj_ark_model', cfgModel.value.trim());
+    localStorage.setItem('tj_ark_key', cfgKey.value.trim());
+    localStorage.setItem('tj_cors_proxy', cfgProxy.value.trim());
+    showCfgStatus('配置已保存', false);
+    updateAiButtonVisibility();
+  });
+
+  // Test connection
+  document.getElementById('btn-test-cfg').addEventListener('click', async () => {
+    if (!isConfigured()) {
+      showCfgStatus('请填写完整的 Endpoint、Model ID 和 API Key', true);
+      return;
+    }
+    showCfgStatus('测试中...', false);
+    try {
+      const endpoint = cfgEndpoint.value.trim().replace(/\/+$/, '');
+      const url = `${endpoint}/chat/completions`;
+      const proxied = cfgProxy.value.trim() ? `${cfgProxy.value.trim()}${encodeURIComponent(url)}` : url;
+      const resp = await fetch(proxied, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cfgKey.value.trim()}`
+        },
+        body: JSON.stringify({
+          model: cfgModel.value.trim(),
+          messages: [{ role: 'user', content: 'hi' }],
+          max_tokens: 5
+        })
+      });
+      if (resp.ok) {
+        showCfgStatus('连接成功', false);
+      } else {
+        const errText = await resp.text();
+        showCfgStatus(`连接失败 (${resp.status}): ${errText.slice(0, 120)}`, true);
+      }
+    } catch (e) {
+      showCfgStatus(`网络错误: ${e.message}`, true);
+    }
+  });
+
+  // ==========================================
+  // Stock Info Lookup (JSONP via Sina)
+  // ==========================================
+  const stockInfoEl = document.getElementById('stock-info');
+  let stockLookupTimer = null;
+
+  function getStockPrefix(code) {
+    return code.startsWith('6') ? 'sh'
+      : code.startsWith('4') || code.startsWith('8') ? 'bj' : 'sz';
+  }
+
+  function fetchStockInfo(code) {
+    return new Promise((resolve) => {
+      if (!code || code.length !== 6) {
+        stockInfoEl.classList.add('hidden');
+        resolve(null);
+        return;
+      }
+      const prefix = getStockPrefix(code);
+      const symbol = `${prefix}${code}`;
+      const varName = `hq_str_${symbol}`;
+      const existing = document.getElementById('hq-script');
+      if (existing) existing.remove();
+
+      const s = document.createElement('script');
+      s.id = 'hq-script';
+      s.src = `https://hq.sinajs.cn/list=${symbol}`;
+      s.charset = 'gb2312';
+      s.onload = () => {
+        s.remove();
+        const raw = window[varName];
+        if (!raw) {
+          stockInfoEl.classList.add('hidden');
+          resolve(null);
+          return;
+        }
+        const parts = raw.split(',');
+        const info = {
+          name: parts[0],
+          open: parseFloat(parts[1]),
+          yesterdayClose: parseFloat(parts[2]),
+          current: parseFloat(parts[3]),
+          high: parseFloat(parts[4]),
+          low: parseFloat(parts[5]),
+        };
+        delete window[varName];
+        if (!info.current || !info.yesterdayClose) {
+          stockInfoEl.classList.add('hidden');
+          resolve(null);
+          return;
+        }
+        const change = ((info.current - info.yesterdayClose) / info.yesterdayClose * 100).toFixed(2);
+        const sign = change >= 0 ? '+' : '';
+        const colorClass = change > 0 ? 'text-terracotta' : change < 0 ? 'text-sage' : '';
+        stockInfoEl.innerHTML = `<span class="${colorClass} font-bold">${info.name}</span> ${info.current.toFixed(2)} <span class="${colorClass}">${sign}${change}%</span> (昨收 ${info.yesterdayClose.toFixed(2)})`;
+        stockInfoEl.classList.remove('hidden');
+        resolve(info);
+      };
+      s.onerror = () => {
+        s.remove();
+        stockInfoEl.classList.add('hidden');
+        resolve(null);
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  // Debounced stock code input lookup
+  document.getElementById('stock-code').addEventListener('input', (e) => {
+    clearTimeout(stockLookupTimer);
+    const code = e.target.value.replace(/\D/g, '');
+    if (code.length !== 6) {
+      stockInfoEl.classList.add('hidden');
+      return;
+    }
+    stockLookupTimer = setTimeout(() => {
+      fetchStockInfo(code).then((info) => {
+        if (info && info.name) {
+          const nameInput = document.getElementById('stock-name');
+          if (!nameInput.value.trim()) {
+            nameInput.value = info.name;
+          }
+        }
+      });
+    }, 300);
+  });
+
+  // ==========================================
+  // AI Analysis
+  // ==========================================
+  const aiActions = document.getElementById('ai-actions');
+  const aiStatus = document.getElementById('ai-status');
+  const btnAiAnalyze = document.getElementById('btn-ai-analyze');
+  const aiBtnText = document.getElementById('ai-btn-text');
+  const aiIcon = document.getElementById('ai-icon');
+  let aiAnalyzing = false;
+
+  function updateAiButtonVisibility() {
+    if (pendingImages.length > 0 && isConfigured()) {
+      aiActions.classList.remove('hidden');
+    } else {
+      aiActions.classList.add('hidden');
+    }
+    aiStatus.classList.add('hidden');
+  }
+
+  function showAiStatus(msg, isError) {
+    aiStatus.textContent = msg;
+    aiStatus.className = `mt-3 text-sm ${isError ? 'text-terracotta' : 'text-sage'}`;
+    aiStatus.classList.remove('hidden');
+  }
+
+  async function aiAnalyze() {
+    if (aiAnalyzing) return;
+    if (!isConfigured()) {
+      showAiStatus('请先在 AI 设置中配置 API Key 和 Model ID', true);
+      return;
+    }
+    if (pendingImages.length === 0) {
+      showAiStatus('请先上传截图', true);
+      return;
+    }
+
+    aiAnalyzing = true;
+    btnAiAnalyze.disabled = true;
+    aiBtnText.textContent = '识别中...';
+    aiIcon.innerHTML = '<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>';
+    aiIcon.classList.add('animate-spin');
+    aiStatus.classList.add('hidden');
+
+    try {
+      const endpoint = cfgEndpoint.value.trim().replace(/\/+$/, '');
+      const apiKey = cfgKey.value.trim();
+      const model = cfgModel.value.trim();
+      const proxy = cfgProxy.value.trim();
+
+      const content = [
+        {
+          type: 'text',
+          text: '分析这些交易截图/图片，提取以下信息并严格以JSON格式返回（不要包含其他文字）：\n{\n  "stockCode": "6位股票代码",\n  "stockName": "股票名称",\n  "direction": "buy或sell",\n  "price": 交易价格(数字),\n  "quantity": 交易数量(数字),\n  "dateTime": "交易时间 ISO格式",\n  "reason": "交易理由/分析",\n  "tags": ["标签1", "标签2"]\n}\n无法确定的字段返回null。如果图片不是交易相关内容，返回 {"error": "not_trade_related"}。'
+        },
+        ...pendingImages.map(src => ({
+          type: 'image_url',
+          image_url: { url: src }
+        }))
+      ];
+
+      const apiUrl = `${endpoint}/chat/completions`;
+      const fetchUrl = proxy ? `${proxy}${encodeURIComponent(apiUrl)}` : apiUrl;
+
+      const resp = await fetch(fetchUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [{ role: 'user', content: content }],
+          max_tokens: 1024
+        })
+      });
+
+      if (!resp.ok) {
+        const errText = await resp.text();
+        throw new Error(`API 请求失败 (${resp.status}): ${errText.slice(0, 200)}`);
+      }
+
+      const data = await resp.json();
+      let text = data.choices?.[0]?.message?.content || '';
+      text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        throw new Error(`AI 返回内容无法解析为 JSON：\n${text.slice(0, 500)}`);
+      }
+
+      if (result.error) {
+        showAiStatus('图片似乎不是交易相关内容', true);
+        return;
+      }
+
+      // Fill form fields
+      if (result.stockCode) document.getElementById('stock-code').value = result.stockCode;
+      if (result.stockName) document.getElementById('stock-name').value = result.stockName;
+      if (result.price) document.getElementById('price').value = result.price;
+      if (result.quantity) document.getElementById('quantity').value = result.quantity;
+      if (result.reason) document.getElementById('reason').value = result.reason;
+      if (result.tags?.length) document.getElementById('tags').value = result.tags.join(', ');
+
+      // Direction
+      if (result.direction === 'sell' || result.direction === 'buy') {
+        directionInput.value = result.direction;
+        dirBtns.forEach(b => {
+          const isActive = b.dataset.dir === result.direction;
+          b.className = isActive
+            ? (result.direction === 'buy'
+                ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
+                : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors')
+            : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
+        });
+      }
+
+      // DateTime
+      if (result.dateTime) {
+        try {
+          const d = new Date(result.dateTime);
+          if (!isNaN(d.getTime())) {
+            const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('trade-time').value = local;
+          }
+        } catch {}
+      }
+
+      // Fetch real-time stock info for comparison
+      if (result.stockCode) {
+        fetchStockInfo(result.stockCode).then((info) => {
+          if (info && result.price && info.current) {
+            const diff = Math.abs((info.current - result.price) / result.price * 100);
+            if (diff > 2) {
+              showAiStatus(`识别完成 — 当前价 ${info.current.toFixed(2)}，截图价 ${result.price.toFixed(2)}（差异 ${diff.toFixed(1)}%）`, false);
+            } else {
+              showAiStatus('识别完成，请检查并保存', false);
+            }
+          } else {
+            showAiStatus('识别完成，请检查并保存', false);
+          }
+        });
+      } else {
+        showAiStatus('识别完成，请检查并保存', false);
+      }
+    } catch (e) {
+      showAiStatus(e.message, true);
+    } finally {
+      aiAnalyzing = false;
+      btnAiAnalyze.disabled = false;
+      aiBtnText.textContent = 'AI 识别';
+      aiIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.5L12 20l-6.364-6.364a5 5 0 010-7.072z"></path>';
+      aiIcon.classList.remove('animate-spin');
+    }
+  }
+
+  btnAiAnalyze.addEventListener('click', aiAnalyze);
 </script>
 
 <style>
