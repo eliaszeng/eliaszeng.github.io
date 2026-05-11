@@ -3,7 +3,10 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "inject-config": "node scripts/inject-ai-config.mjs",
+    "predev": "node scripts/inject-ai-config.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/inject-ai-config.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },
