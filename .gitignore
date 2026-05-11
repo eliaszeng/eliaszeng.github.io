@@ -1,6 +1,15 @@
 node_modules/
 dist/
 .astro/
+.claude/
 
 # 本地密码配置（不推 git）
 public/auth-config.json
+public/ai-config.json
+
+# 本地交易数据
+today-trades-*.json
+
+# 本地工具脚本（含 API key）
+scripts/ai-proxy.mjs
+scripts/inject-ai-config.mjs
