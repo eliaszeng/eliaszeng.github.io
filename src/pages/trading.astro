@@ -20,7 +20,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   {/* API Settings Panel */}
   <div id="settings-panel" class="hidden bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-8 reveal">
     <h3 class="font-display text-lg font-bold mb-1">AI 接口配置</h3>
-    <p class="text-xs text-ink-faint mb-4">兼容 OpenAI 格式的多模态 API 均可（DeepSeek / 智谱 / 月之暗面 / SiliconFlow 等）。也可运行 <code class="bg-cream-dark px-1 rounded">node scripts/ai-proxy.mjs</code> 读取本地 Claude 配置，Base URL 填 <code class="bg-cream-dark px-1 rounded">http://localhost:3456</code> 即可，无需填 Key。</p>
+    <p class="text-xs text-ink-faint mb-4">支持 OpenAI 格式（DeepSeek / SiliconFlow 等）和 Anthropic 格式（mimo 等）。运行 <code class="bg-cream-dark px-1 rounded">node scripts/ai-proxy.mjs</code> 可自动读取本地 Claude 配置。</p>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="font-mono text-xs text-ink-faint block mb-1.5">Base URL</label>
@@ -36,6 +36,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <label class="font-mono text-xs text-ink-faint block mb-1.5">API Key</label>
         <input id="cfg-key" type="password" placeholder="sk-..."
           class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
+      </div>
+      <div>
+        <label class="font-mono text-xs text-ink-faint block mb-1.5">API 格式</label>
+        <select id="cfg-format"
+          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors">
+          <option value="openai">OpenAI（/v1/chat/completions）</option>
+          <option value="anthropic">Anthropic（/v1/messages）</option>
+        </select>
       </div>
       <div>
         <label class="font-mono text-xs text-ink-faint block mb-1.5">CORS 代理（可选）</label>
@@ -827,6 +835,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     cfgModel.value = localStorage.getItem('tj_ark_model') || '';
     cfgKey.value = localStorage.getItem('tj_ark_key') || '';
     cfgProxy.value = localStorage.getItem('tj_cors_proxy') || '';
+    document.getElementById('cfg-format').value = localStorage.getItem('tj_api_format') || 'openai';
   }
   loadConfig();
 
@@ -852,6 +861,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     localStorage.setItem('tj_ark_model', cfgModel.value.trim());
     localStorage.setItem('tj_ark_key', cfgKey.value.trim());
     localStorage.setItem('tj_cors_proxy', cfgProxy.value.trim());
+    localStorage.setItem('tj_api_format', document.getElementById('cfg-format').value);
     showCfgStatus('配置已保存', false);
     updateAiButtonVisibility();
   });
@@ -1025,33 +1035,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const apiKey = cfgKey.value.trim();
       const model = cfgModel.value.trim();
       const proxy = cfgProxy.value.trim();
+      const apiFormat = document.getElementById('cfg-format').value;
 
-      const content = [
-        {
-          type: 'text',
-          text: '分析这些交易截图/图片，提取以下信息并严格以JSON格式返回（不要包含其他文字）：\n{\n  "stockCode": "6位股票代码",\n  "stockName": "股票名称",\n  "direction": "buy或sell",\n  "price": 交易价格(数字),\n  "quantity": 交易数量(数字),\n  "dateTime": "交易时间 ISO格式",\n  "reason": "交易理由/分析",\n  "tags": ["标签1", "标签2"]\n}\n无法确定的字段返回null。如果图片不是交易相关内容，返回 {"error": "not_trade_related"}。'
-        },
-        ...pendingImages.map(src => ({
-          type: 'image_url',
-          image_url: { url: src }
-        }))
-      ];
+      const promptText = '分析这些交易截图/图片，提取以下信息并严格以JSON格式返回（不要包含其他文字）：\n{\n  "stockCode": "6位股票代码",\n  "stockName": "股票名称",\n  "direction": "buy或sell",\n  "price": 交易价格(数字),\n  "quantity": 交易数量(数字),\n  "dateTime": "交易时间 ISO格式",\n  "reason": "交易理由/分析",\n  "tags": ["标签1", "标签2"]\n}\n无法确定的字段返回null。如果图片不是交易相关内容，返回 {"error": "not_trade_related"}。';
 
-      const apiUrl = `${endpoint}/chat/completions`;
+      let apiUrl, headers, body, responseText;
+
+      if (apiFormat === 'anthropic') {
+        // Anthropic format: /v1/messages
+        apiUrl = `${endpoint}/v1/messages`;
+        headers = {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        };
+        const imageContent = pendingImages.map(src => {
+          const match = src.match(/^data:(image\/\w+);base64,(.+)$/);
+          if (match) {
+            return { type: 'image', source: { type: 'base64', media_type: match[1], data: match[2] } };
+          }
+          return { type: 'image', source: { type: 'url', url: src } };
+        });
+        body = JSON.stringify({
+          model: model,
+          max_tokens: 1024,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: promptText },
+              ...imageContent,
+            ]
+          }]
+        });
+      } else {
+        // OpenAI format: /v1/chat/completions
+        apiUrl = `${endpoint}/chat/completions`;
+        headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        };
+        body = JSON.stringify({
+          model: model,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: promptText },
+              ...pendingImages.map(src => ({ type: 'image_url', image_url: { url: src } })),
+            ]
+          }],
+          max_tokens: 1024,
+        });
+      }
+
       const fetchUrl = proxy ? `${proxy}${encodeURIComponent(apiUrl)}` : apiUrl;
 
-      const resp = await fetch(fetchUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [{ role: 'user', content: content }],
-          max_tokens: 1024
-        })
-      });
+      const resp = await fetch(fetchUrl, { method: 'POST', headers, body });
 
       if (!resp.ok) {
         const errText = await resp.text();
@@ -1059,8 +1097,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
 
       const data = await resp.json();
-      let text = data.choices?.[0]?.message?.content || '';
-      text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+      if (apiFormat === 'anthropic') {
+        responseText = (data.content || []).map(c => c.text || '').join('');
+      } else {
+        responseText = data.choices?.[0]?.message?.content || '';
+      }
+      let text = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
 
       let result;
       try {
