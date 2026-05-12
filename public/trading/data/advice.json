@@ -42,5 +42,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-12T21:55:00",
     "chartPath": "/trading/charts/300852_20260512.png"
+  },
+  {
+    "id": "b1c2d3e4-0007",
+    "stockCode": "300480",
+    "stockName": "光力科技",
+    "direction": "hold",
+    "keyPrice": 35.8,
+    "reason": "35.80为历史高位防守位（4/30收35.87、5/7低35.79多次测试），今日冲高回落收37.99，关注该位置能否守住",
+    "source": "用户观察",
+    "createdAt": "2026-05-12T22:10:00",
+    "chartPath": "/trading/charts/300480_20260512.png"
   }
 ]
