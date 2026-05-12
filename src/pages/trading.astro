@@ -218,11 +218,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       for (const a of items) {
         const links = getStockLinks(a.stockCode);
         const isBuy = a.direction === 'buy';
-        const dirBadge = a.direction
-          ? (isBuy
-            ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-sage/10 text-sage">买入</span>`
-            : `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta">卖出</span>`)
-          : '';
+        const dirBadge = a.direction === 'buy'
+          ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-sage/10 text-sage">买入</span>`
+          : a.direction === 'sell'
+            ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta">卖出</span>`
+            : a.direction === 'hold'
+              ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink-light">持有</span>`
+              : '';
 
         const chartHtml = a.chartPath
           ? `<div class="mt-3"><img src="${a.chartPath}" alt="K线图" class="rounded-lg border border-ink/10 cursor-pointer hover:opacity-80 transition-opacity chart-img w-full max-w-md" /></div>`
