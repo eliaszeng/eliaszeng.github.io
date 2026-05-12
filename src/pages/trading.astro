@@ -10,52 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1 class="font-display text-5xl lg:text-6xl font-bold leading-tight">
       交易<span class="text-terracotta italic">日记</span>
     </h1>
-    <p class="mt-4 text-ink-light max-w-xl">快速记录交易操作与选股建议，复盘回顾，分类管理。</p>
-    <button id="toggle-settings" class="mt-3 inline-flex items-center gap-1.5 font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors" title="AI 设置">
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-      AI 设置
-    </button>
-  </div>
-
-  {/* API Settings Panel */}
-  <div id="settings-panel" class="hidden bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-8 reveal">
-    <h3 class="font-display text-lg font-bold mb-1">AI 接口配置</h3>
-    <p class="text-xs text-ink-faint mb-4">支持 OpenAI 格式（DeepSeek / SiliconFlow 等）和 Anthropic 格式（mimo 等）。运行 <code class="bg-cream-dark px-1 rounded">node scripts/ai-proxy.mjs</code> 可自动读取本地 Claude 配置。</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">Base URL</label>
-        <input id="cfg-endpoint" type="text" placeholder="https://api.siliconflow.cn/v1"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">模型名称</label>
-        <input id="cfg-model" type="text" placeholder="Qwen/Qwen2.5-VL-72B-Instruct"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">API Key</label>
-        <input id="cfg-key" type="password" placeholder="sk-..."
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">API 格式</label>
-        <select id="cfg-format"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors">
-          <option value="openai">OpenAI（/v1/chat/completions）</option>
-          <option value="anthropic">Anthropic（/v1/messages）</option>
-        </select>
-      </div>
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">CORS 代理（可选）</label>
-        <input id="cfg-proxy" type="text" placeholder="https://corsproxy.io/?"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-    </div>
-    <div class="flex gap-3 mt-4">
-      <button id="btn-save-cfg" type="button" class="bg-ink text-cream px-5 py-2 rounded-lg text-sm font-medium hover:bg-ink/90 transition-colors">保存配置</button>
-      <button id="btn-test-cfg" type="button" class="px-5 py-2 rounded-lg text-sm font-medium text-ink-light bg-cream border border-ink/10 hover:bg-cream-dark transition-colors">测试连接</button>
-    </div>
-    <div id="cfg-status" class="mt-3 text-sm hidden"></div>
+    <p class="mt-4 text-ink-light max-w-xl">记录交易操作与选股建议，K线复盘，数据由后端自动生成。</p>
   </div>
 
   {/* Stats bar */}
@@ -76,149 +31,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <div class="h-px bg-ink/[0.08] mb-12"></div>
 
-  {/* Quick add form */}
-  <div class="bg-paper rounded-2xl p-7 shadow-sm border border-ink/[0.04] mb-12 reveal">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="font-display text-xl font-bold">快速记录</h2>
-      <div class="flex gap-2">
-        <button id="tab-trade" class="font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors">交易</button>
-        <button id="tab-tip" class="font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors">建议</button>
-      </div>
-    </div>
-
-    <form id="entry-form" class="space-y-5">
-      <input type="hidden" id="entry-type" value="trade" />
-      <input type="hidden" id="edit-id" value="" />
-
-      {/* Row 1: Stock code + name + direction */}
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">股票代码</label>
-          <input id="stock-code" type="text" placeholder="600519" maxlength="6"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-          <div id="stock-info" class="hidden mt-1.5 font-mono text-xs text-ink-faint"></div>
-        </div>
-        <div>
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">名称</label>
-          <input id="stock-name" type="text" placeholder="贵州茅台"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
-        </div>
-        <div id="direction-group">
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">方向</label>
-          <div class="flex gap-2">
-            <button type="button" data-dir="buy" class="dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors">买入</button>
-            <button type="button" data-dir="sell" class="dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors">卖出</button>
-          </div>
-          <input type="hidden" id="direction" value="buy" />
-        </div>
-      </div>
-
-      {/* Row 2: Price + quantity + time */}
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">价格</label>
-          <input id="price" type="number" step="0.01" placeholder="0.00"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-        </div>
-        <div>
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">数量</label>
-          <input id="quantity" type="number" placeholder="100"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-        </div>
-        <div>
-          <label class="font-mono text-xs text-ink-faint block mb-1.5">交易时间</label>
-          <input id="trade-time" type="datetime-local"
-            class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-        </div>
-      </div>
-
-      {/* Row 2.5: Friend (tip only) */}
-      <div id="friend-group" class="hidden">
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">来源 / 朋友</label>
-        <input id="friend" type="text" placeholder="老王"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-
-      {/* Row 3: Reason */}
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">理由 / 备注</label>
-        <textarea id="reason" rows="2" placeholder="买入理由、技术形态、朋友建议内容..."
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors resize-none"></textarea>
-      </div>
-
-      {/* Row 4: Tags */}
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">标签（逗号分隔）</label>
-        <input id="tags" type="text" placeholder="突破, 蓝筹, MACD金叉"
-          class="w-full bg-cream border border-ink/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-terracotta/50 transition-colors" />
-      </div>
-
-      {/* Row 5: Image upload */}
-      <div>
-        <label class="font-mono text-xs text-ink-faint block mb-1.5">截图</label>
-        <div id="drop-zone"
-          class="border-2 border-dashed border-ink/10 rounded-lg p-6 text-center cursor-pointer hover:border-terracotta/30 transition-colors">
-          <p class="text-ink-faint text-sm">点击或拖拽图片到此处</p>
-          <p class="text-ink-faint text-xs mt-1">支持 JPG / PNG，可多张</p>
-          <input type="file" id="image-input" accept="image/*" multiple class="hidden" />
-        </div>
-        <div id="image-preview" class="flex gap-3 mt-3 flex-wrap"></div>
-        <div id="ai-actions" class="hidden mt-3">
-          <button id="btn-ai-analyze" type="button" class="inline-flex items-center gap-2 bg-terracotta text-cream px-5 py-2 rounded-lg text-sm font-medium hover:bg-terracotta/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-            <svg id="ai-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.5L12 20l-6.364-6.364a5 5 0 010-7.072z"></path></svg>
-            <span id="ai-btn-text">AI 识别</span>
-          </button>
-        </div>
-        <div id="ai-status" class="hidden mt-2 text-sm"></div>
-      </div>
-
-      {/* Submit */}
-      <div class="flex gap-3 pt-2">
-        <button type="submit" class="bg-ink text-cream px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-ink/90 transition-colors">
-          保存记录
-        </button>
-        <button type="button" id="cancel-edit" class="hidden px-6 py-2.5 rounded-lg text-sm font-medium text-ink-light bg-cream border border-ink/10 hover:bg-cream-dark transition-colors">
-          取消
-        </button>
-      </div>
-    </form>
-  </div>
-
-  {/* Filters */}
+  {/* Tab switcher + Filters */}
   <div class="flex flex-wrap items-center gap-3 mb-4 reveal">
-    <span class="font-mono text-xs text-ink-faint">筛选</span>
-    <button data-filter="all" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream">全部</button>
-    <button data-filter="trade" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">交易</button>
-    <button data-filter="tip" class="filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">建议</button>
+    <button data-tab="trades" class="tab-btn font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors">交易记录</button>
+    <button data-tab="advice" class="tab-btn font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors">朋友建议</button>
     <div class="flex-1"></div>
-    <button id="btn-export" class="font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors" title="导出 JSON">
-      导出
-    </button>
-    <label class="font-mono text-xs px-3 py-1.5 rounded-lg text-ink-light hover:text-ink hover:bg-cream-dark transition-colors cursor-pointer" title="导入 JSON">
-      导入
-      <input type="file" id="import-input" accept=".json" class="hidden" />
-    </label>
-  </div>
-
-  {/* Date range filter */}
-  <div class="flex flex-wrap items-center gap-3 mb-8 reveal">
     <span class="font-mono text-xs text-ink-faint">日期</span>
-    <input id="date-from" type="date"
-      class="bg-cream border border-ink/10 rounded-lg px-3 py-1 text-xs font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-    <span class="font-mono text-xs text-ink-faint">至</span>
-    <input id="date-to" type="date"
-      class="bg-cream border border-ink/10 rounded-lg px-3 py-1 text-xs font-mono focus:outline-none focus:border-terracotta/50 transition-colors" />
-    <button id="date-today" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">今天</button>
-    <button id="date-week" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近7天</button>
-    <button id="date-month" type="button" class="font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近30天</button>
-    <button id="date-clear" type="button" class="font-mono text-xs px-3 py-1 rounded-full text-ink-faint hover:text-terracotta">清除</button>
+    <button data-range="today" class="range-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">今天</button>
+    <button data-range="7d" class="range-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近7天</button>
+    <button data-range="30d" class="range-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark">近30天</button>
+    <button data-range="all" class="range-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream">全部</button>
   </div>
 
-  {/* Entry list */}
-  <div id="entry-list" class="space-y-4">
+  {/* Content area */}
+  <div id="content-area" class="space-y-4">
     <div id="empty-state" class="text-center py-20 text-ink-faint">
-      <p class="font-display text-2xl mb-2">还没有记录</p>
-      <p class="text-sm">在上方添加你的第一笔交易或朋友建议</p>
+      <p class="font-display text-2xl mb-2">暂无数据</p>
+      <p class="text-sm">数据由后端 Python 脚本生成，请等待更新</p>
     </div>
   </div>
 
@@ -230,108 +59,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <script>
-  if (sessionStorage.getItem('tj_auth') !== '1') {
-    location.href = '/login';
-  }
-</script>
+  // --- State ---
+  let trades = [];
+  let advice = [];
+  let currentTab = 'trades';
+  let currentRange = 'all';
 
-<script>
-  // --- IndexedDB module (inlined) ---
-  const DB_NAME = 'TradingJournal';
-  const DB_VERSION = 1;
-  const STORE_NAME = 'entries';
+  // --- DOM refs ---
+  const contentArea = document.getElementById('content-area');
+  const emptyState = document.getElementById('empty-state');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
 
-  function openDB() {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-          store.createIndex('createdAt', 'createdAt', { unique: false });
-          store.createIndex('stockCode', 'stockCode', { unique: false });
-          store.createIndex('type', 'type', { unique: false });
-        }
-      };
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  function dbTx(mode, fn) {
-    return openDB().then(db => new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, mode);
-      const store = transaction.objectStore(STORE_NAME);
-      let captured;
-      // 让 fn 决定怎么 resolve（通过 setResult），避免对 IDBRequest / Promise 做模糊判断
-      const setResult = (v) => { captured = v; };
-      const ret = fn(store, setResult);
-      // 如果 fn 直接返回了 IDBRequest，也兼容
-      if (ret && typeof ret.onsuccess !== 'undefined' && captured === undefined) {
-        ret.onsuccess = () => { captured = ret.result; };
-        ret.onerror = () => reject(ret.error);
-      }
-      transaction.oncomplete = () => resolve(captured !== undefined ? captured : ret);
-      transaction.onerror = () => reject(transaction.error);
-      transaction.onabort = () => reject(transaction.error || new Error('Transaction aborted'));
-    }));
-  }
-
-  function addEntry(entry) {
-    const data = {
-      ...entry,
-      id: crypto.randomUUID(),
-      createdAt: entry.createdAt || new Date().toISOString(),
-    };
-    return dbTx('readwrite', store => store.put(data)).then(() => data);
-  }
-
-  function updateEntry(entry) {
-    return dbTx('readwrite', store => store.put(entry)).then(() => entry);
-  }
-
-  function deleteEntry(id) {
-    return dbTx('readwrite', store => store.delete(id));
-  }
-
-  function getAllEntries() {
-    return dbTx('readonly', (store, setResult) => {
-      const req = store.getAll();
-      req.onsuccess = () => {
-        const list = req.result || [];
-        // 显式按 createdAt 倒序排序（不依赖 IndexedDB 索引）
-        // 修复编辑后排序错乱的 bug
-        list.sort((a, b) => {
-          const ta = new Date(a.createdAt).getTime() || 0;
-          const tb = new Date(b.createdAt).getTime() || 0;
-          return tb - ta;
-        });
-        setResult(list);
-      };
-    });
-  }
-
-  async function exportJSON() {
-    const entries = await getAllEntries();
-    const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `trading-journal-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function importJSON(file) {
-    const text = await file.text();
-    const entries = JSON.parse(text);
-    if (!Array.isArray(entries)) throw new Error('Invalid format');
-    for (const entry of entries) {
-      await dbTx('readwrite', store => store.put(entry));
-    }
-    return entries.length;
-  }
-
+  // --- Links ---
   function getStockLinks(code) {
     if (!code) return {};
     const c = code.replace(/\D/g, '');
@@ -342,286 +82,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return { ths, east };
   }
 
-  // --- State ---
-  let allEntries = [];
-  let currentFilter = 'all';
-  let editId = null;
-  let pendingImages = [];
-  let isSubmitting = false; // 防止重复保存
-  let dateFrom = ''; // 日期筛选起
-  let dateTo = ''; // 日期筛选止
-
-  // --- DOM refs ---
-  const form = document.getElementById('entry-form');
-  const tabTrade = document.getElementById('tab-trade');
-  const tabTip = document.getElementById('tab-tip');
-  const entryType = document.getElementById('entry-type');
-  const directionGroup = document.getElementById('direction-group');
-  const friendGroup = document.getElementById('friend-group');
-  const dirBtns = document.querySelectorAll('.dir-btn');
-  const directionInput = document.getElementById('direction');
-  const dropZone = document.getElementById('drop-zone');
-  const imageInput = document.getElementById('image-input');
-  const imagePreview = document.getElementById('image-preview');
-  const entryList = document.getElementById('entry-list');
-  const emptyState = document.getElementById('empty-state');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const btnExport = document.getElementById('btn-export');
-  const importInput = document.getElementById('import-input');
-  const cancelBtn = document.getElementById('cancel-edit');
-
-  // --- Type tabs ---
-  function setTab(type) {
-    entryType.value = type;
-    if (type === 'trade') {
-      tabTrade.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors';
-      tabTip.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors';
-      directionGroup.classList.remove('hidden');
-      friendGroup.classList.add('hidden');
-    } else {
-      tabTip.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors';
-      tabTrade.className = 'font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors';
-      directionGroup.classList.add('hidden');
-      friendGroup.classList.remove('hidden');
-    }
-  }
-
-  tabTrade.addEventListener('click', () => setTab('trade'));
-  tabTip.addEventListener('click', () => setTab('tip'));
-
-  // --- Direction buttons ---
-  dirBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const dir = btn.dataset.dir;
-      directionInput.value = dir;
-      dirBtns.forEach(b => {
-        if (b.dataset.dir === dir) {
-          b.className = dir === 'buy'
-            ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
-            : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors';
-        } else {
-          b.className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
-        }
-      });
-    });
-  });
-
-  // --- Image upload ---
-  function handleFiles(files) {
-    for (const file of files) {
-      if (!file.type.startsWith('image/')) continue;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        pendingImages.push(e.target.result);
-        renderImagePreview();
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  function renderImagePreview() {
-    imagePreview.innerHTML = pendingImages.map((src, i) => `
-      <div class="relative group">
-        <img src="${src}" class="w-20 h-20 object-cover rounded-lg border border-ink/10" />
-        <button type="button" data-rm="${i}"
-          class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-terracotta text-cream text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          &times;
-        </button>
-      </div>
-    `).join('');
-
-    imagePreview.querySelectorAll('[data-rm]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        pendingImages.splice(parseInt(btn.dataset.rm), 1);
-        renderImagePreview();
-      });
-    });
-
-    // Update AI button visibility
-    if (typeof updateAiButtonVisibility === 'function') updateAiButtonVisibility();
-  }
-
-  dropZone.addEventListener('click', () => imageInput.click());
-  imageInput.addEventListener('change', () => handleFiles(imageInput.files));
-
-  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-terracotta/30'); });
-  dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-terracotta/30'); });
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('border-terracotta/30');
-    handleFiles(e.dataTransfer.files);
-  });
-
-  // --- Form submit ---
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return; // 防止重复保存（快速双击 / 回车多次）
-    isSubmitting = true;
-
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn ? submitBtn.textContent : '';
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = '保存中...';
-      submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
-    }
-
-    try {
-      const code = document.getElementById('stock-code').value.trim();
-      const name = document.getElementById('stock-name').value.trim();
-      if (!code) { document.getElementById('stock-code').focus(); return; }
-
-      const timeVal = document.getElementById('trade-time').value;
-      const entry = {
-        type: entryType.value,
-        stockCode: code,
-        stockName: name,
-        direction: entryType.value === 'trade' ? directionInput.value : undefined,
-        price: parseFloat(document.getElementById('price').value) || 0,
-        quantity: parseInt(document.getElementById('quantity').value) || 0,
-        reason: document.getElementById('reason').value.trim(),
-        friend: entryType.value === 'tip' ? document.getElementById('friend').value.trim() : undefined,
-        tags: document.getElementById('tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
-        images: pendingImages,
-      };
-
-      if (editId) {
-        const existing = allEntries.find(e => e.id === editId);
-        entry.createdAt = timeVal ? new Date(timeVal).toISOString() : existing.createdAt;
-        await updateEntry({ ...existing, ...entry });
-        editId = null;
-        cancelBtn.classList.add('hidden');
-      } else {
-        entry.createdAt = timeVal ? new Date(timeVal).toISOString() : new Date().toISOString();
-        await addEntry(entry);
-      }
-
-      form.reset();
-      pendingImages = [];
-      renderImagePreview();
-      setTab('trade');
-      directionInput.value = 'buy';
-      dirBtns[0].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors';
-      dirBtns[1].className = 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
-
-      await refreshList();
-    } finally {
-      isSubmitting = false;
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
-        submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
-      }
-    }
-  });
-
-  cancelBtn.addEventListener('click', () => {
-    editId = null;
-    form.reset();
-    pendingImages = [];
-    renderImagePreview();
-    cancelBtn.classList.add('hidden');
-    setTab('trade');
-  });
-
-  // --- Filter ---
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentFilter = btn.dataset.filter;
-      filterBtns.forEach(b => {
-        b.className = b === btn
-          ? 'filter-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream'
-          : 'filter-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark';
-      });
-      renderEntries();
-    });
-  });
-
-  // --- Date range filter ---
-  const dateFromInput = document.getElementById('date-from');
-  const dateToInput = document.getElementById('date-to');
-  function ymd(d) {
-    return d.getFullYear() + '-' +
-      String(d.getMonth() + 1).padStart(2, '0') + '-' +
-      String(d.getDate()).padStart(2, '0');
-  }
-  function applyDateFilter() {
-    dateFrom = dateFromInput.value;
-    dateTo = dateToInput.value;
-    renderEntries();
-  }
-  dateFromInput.addEventListener('change', applyDateFilter);
-  dateToInput.addEventListener('change', applyDateFilter);
-
-  document.getElementById('date-today').addEventListener('click', () => {
-    const today = ymd(new Date());
-    dateFromInput.value = today;
-    dateToInput.value = today;
-    applyDateFilter();
-  });
-  document.getElementById('date-week').addEventListener('click', () => {
-    const now = new Date();
-    const weekAgo = new Date(now.getTime() - 6 * 86400000);
-    dateFromInput.value = ymd(weekAgo);
-    dateToInput.value = ymd(now);
-    applyDateFilter();
-  });
-  document.getElementById('date-month').addEventListener('click', () => {
-    const now = new Date();
-    const monthAgo = new Date(now.getTime() - 29 * 86400000);
-    dateFromInput.value = ymd(monthAgo);
-    dateToInput.value = ymd(now);
-    applyDateFilter();
-  });
-  document.getElementById('date-clear').addEventListener('click', () => {
-    dateFromInput.value = '';
-    dateToInput.value = '';
-    applyDateFilter();
-  });
-
-  // --- Export / Import ---
-  btnExport.addEventListener('click', exportJSON);
-  importInput.addEventListener('change', async () => {
-    const file = importInput.files[0];
-    if (!file) return;
-    const count = await importJSON(file);
-    alert(`已导入 ${count} 条记录`);
-    importInput.value = '';
-    await refreshList();
-  });
-
-  // --- Lightbox ---
-  lightbox.addEventListener('click', () => {
-    lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
-  });
-
-  function openLightbox(src) {
-    lightboxImg.src = src;
-    lightbox.classList.remove('hidden');
-    lightbox.classList.add('flex');
-  }
-
-  // --- Render ---
-  function getStockLinksForCode(code) {
-    if (!code) return {};
-    const c = code.replace(/\D/g, '');
-    return getStockLinks(c);
-  }
-
-  function formatDate(iso) {
+  // --- Date helpers ---
+  function formatFullDate(iso) {
     const d = new Date(iso);
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const day = d.getDate().toString().padStart(2, '0');
-    const hours = d.getHours().toString().padStart(2, '0');
-    const mins = d.getMinutes().toString().padStart(2, '0');
-    return `${month}-${day} ${hours}:${mins}`;
+    return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
   }
 
-  function formatGroupDate(iso) {
-    const d = new Date(iso);
+  function isInRange(dateStr, range) {
+    if (range === 'all') return true;
+    const d = new Date(dateStr).getTime();
+    const now = Date.now();
+    if (range === 'today') {
+      const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+      return d >= todayStart.getTime();
+    }
+    if (range === '7d') return d >= now - 7 * 86400000;
+    if (range === '30d') return d >= now - 30 * 86400000;
+    return true;
+  }
+
+  function groupByDate(items, dateField) {
+    const groups = {};
+    for (const item of items) {
+      const key = new Date(item[dateField]).toISOString().slice(0, 10);
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(item);
+    }
+    return groups;
+  }
+
+  function labelForDate(dateKey) {
+    const d = new Date(dateKey + 'T00:00:00');
     const now = new Date();
     const diff = Math.floor((now - d) / 86400000);
     if (diff === 0) return '今天';
@@ -630,577 +121,230 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     return `${d.getMonth() + 1}月${d.getDate()}日`;
   }
 
-  function renderEntries() {
-    let filtered = currentFilter === 'all'
-      ? allEntries
-      : allEntries.filter(e => e.type === currentFilter);
-
-    // 日期范围筛选
-    if (dateFrom) {
-      const fromTs = new Date(dateFrom + 'T00:00:00').getTime();
-      filtered = filtered.filter(e => new Date(e.createdAt).getTime() >= fromTs);
-    }
-    if (dateTo) {
-      const toTs = new Date(dateTo + 'T23:59:59.999').getTime();
-      filtered = filtered.filter(e => new Date(e.createdAt).getTime() <= toTs);
-    }
-
+  // --- Render trades ---
+  function renderTrades() {
+    const filtered = trades.filter(t => isInRange(t.tradeTime, currentRange));
     if (filtered.length === 0) {
+      contentArea.innerHTML = '';
+      contentArea.appendChild(emptyState);
+      emptyState.querySelector('p').textContent = '暂无交易记录';
       emptyState.classList.remove('hidden');
-      entryList.innerHTML = '';
-      entryList.appendChild(emptyState);
       return;
     }
 
     emptyState.classList.add('hidden');
-
-    // Group by date
-    const groups = {};
-    for (const entry of filtered) {
-      const key = new Date(entry.createdAt).toISOString().slice(0, 10);
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(entry);
-    }
-
+    const groups = groupByDate(filtered, 'tradeTime');
     let html = '';
-    for (const [dateKey, entries] of Object.entries(groups)) {
+
+    for (const [dateKey, items] of Object.entries(groups)) {
       html += `<div class="mb-6">`;
-      html += `<div class="font-mono text-xs text-ink-faint mb-3">${formatGroupDate(dateKey)}</div>`;
+      html += `<div class="font-mono text-xs text-ink-faint mb-3">${labelForDate(dateKey)}</div>`;
 
-      for (const entry of entries) {
-        const isTrade = entry.type === 'trade';
-        const isBuy = entry.direction === 'buy';
-        const links = getStockLinksForCode(entry.stockCode);
+      for (const t of items) {
+        const isBuy = t.direction === 'buy';
+        const links = getStockLinks(t.stockCode);
+        const accentClass = isBuy ? 'border-l-sage' : 'border-l-terracotta';
+        const badge = isBuy
+          ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-sage/10 text-sage">买入</span>`
+          : `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta">卖出</span>`;
 
-        const accentClass = isTrade
-          ? (isBuy ? 'border-l-sage' : 'border-l-terracotta')
-          : 'border-l-ink-faint';
-
-        const badge = isTrade
-          ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full ${isBuy ? 'bg-sage/10 text-sage' : 'bg-terracotta/10 text-terracotta'}">${isBuy ? '买入' : '卖出'}</span>`
-          : `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink-light">${entry.friend || '建议'}</span>`;
-
-        const priceLine = entry.price
-          ? `<span class="font-mono text-sm text-ink">${entry.price.toFixed(2)}</span>`
-          : '';
-        const qtyLine = entry.quantity
-          ? `<span class="font-mono text-xs text-ink-faint ml-2">&times;${entry.quantity}</span>`
-          : '';
-        const amountLine = (entry.price && entry.quantity)
-          ? `<span class="font-mono text-xs text-ink-faint ml-3">= ${(entry.price * entry.quantity).toFixed(0)}</span>`
+        const tagsHtml = t.tags?.length
+          ? `<div class="flex flex-wrap gap-1.5 mt-2">${t.tags.map(tag => `<span class="font-mono text-xs px-2.5 py-0.5 rounded-full bg-cream text-ink-light">${tag}</span>`).join('')}</div>`
           : '';
 
-        const stockLinksHtml = entry.stockCode ? `
-          <div class="flex gap-2 mt-2">
-            <a href="${links.ths}" target="_blank" rel="noopener"
-              class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">
-              ${entry.stockCode} 同花顺 &nearr;
-            </a>
-            <a href="${links.east}" target="_blank" rel="noopener"
-              class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">
-              东方财富 &nearr;
-            </a>
-          </div>
-        ` : '';
-
-        const tagsHtml = entry.tags?.length
-          ? `<div class="flex flex-wrap gap-1.5 mt-2">${entry.tags.map(t => `<span class="font-mono text-xs px-2.5 py-0.5 rounded-full bg-cream text-ink-light">${t}</span>`).join('')}</div>`
+        const chartHtml = t.chartPath
+          ? `<div class="mt-3"><img src="${t.chartPath}" alt="K线图" class="rounded-lg border border-ink/10 cursor-pointer hover:opacity-80 transition-opacity chart-img w-full max-w-md" /></div>`
           : '';
 
-        const imagesHtml = entry.images?.length
-          ? `<div class="flex gap-2 mt-3 flex-wrap">${entry.images.map(src =>
-              `<img src="${src}" class="w-16 h-16 object-cover rounded-lg border border-ink/10 cursor-pointer hover:opacity-80 transition-opacity entry-img" />`
-            ).join('')}</div>`
-          : '';
-
-        const reasonHtml = entry.reason
-          ? `<p class="text-sm text-ink-light mt-2 leading-relaxed">${entry.reason}</p>`
+        const reasonHtml = t.reason
+          ? `<p class="text-sm text-ink-light mt-2 leading-relaxed">${t.reason}</p>`
           : '';
 
         html += `
-          <div class="bg-paper rounded-xl p-5 shadow-sm border border-ink/[0.04] border-l-2 ${accentClass} hover:shadow-md transition-shadow group">
+          <div class="bg-paper rounded-xl p-5 shadow-sm border border-ink/[0.04] border-l-2 ${accentClass} hover:shadow-md transition-shadow">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
                 <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
-                  ${entry.stockName ? `<span class="font-display text-2xl font-bold tracking-tight text-ink">${entry.stockName}</span>` : ''}
-                  ${entry.stockCode ? `<span class="font-mono text-sm font-bold px-2 py-0.5 rounded bg-terracotta/10 text-terracotta">${entry.stockCode}</span>` : ''}
+                  ${t.stockName ? `<span class="font-display text-2xl font-bold tracking-tight text-ink">${t.stockName}</span>` : ''}
+                  ${t.stockCode ? `<a href="${links.ths}" target="_blank" rel="noopener" class="font-mono text-sm font-bold px-2 py-0.5 rounded bg-terracotta/10 text-terracotta hover:bg-terracotta/20 transition-colors">${t.stockCode}</a>` : ''}
                 </div>
                 <div class="flex items-center gap-3">
                   ${badge}
-                  <span class="font-mono text-xs text-ink-faint">${formatDate(entry.createdAt)}</span>
+                  <span class="font-mono text-xs text-ink-faint">${formatFullDate(t.tradeTime)}</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2 shrink-0">
-                <button data-edit="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="编辑">编辑</button>
-                <button data-del="${entry.id}" class="opacity-0 group-hover:opacity-100 font-mono text-xs text-ink-faint hover:text-terracotta transition-all" title="删除">&times;</button>
-              </div>
             </div>
-            <div class="mt-3 flex items-center">
-              ${priceLine}${qtyLine}${amountLine}
+            <div class="mt-3 flex items-center gap-2">
+              <span class="font-mono text-sm text-ink font-bold">${t.price?.toFixed(2) ?? '-'}</span>
+              ${t.quantity ? `<span class="font-mono text-xs text-ink-faint">&times;${t.quantity}</span>` : ''}
+              ${t.amount ? `<span class="font-mono text-xs text-ink-faint ml-2">= ${t.amount.toLocaleString()}</span>` : ''}
             </div>
             ${reasonHtml}
-            ${stockLinksHtml}
+            <div class="flex gap-2 mt-2">
+              <a href="${links.ths}" target="_blank" rel="noopener" class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">同花顺 &nearr;</a>
+              <a href="${links.east}" target="_blank" rel="noopener" class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">东方财富 &nearr;</a>
+            </div>
             ${tagsHtml}
-            ${imagesHtml}
+            ${chartHtml}
           </div>
         `;
       }
       html += `</div>`;
     }
 
-    entryList.innerHTML = html;
+    contentArea.innerHTML = html;
+    bindChartClicks();
+  }
 
-    // Bind events
-    entryList.querySelectorAll('[data-del]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (confirm('确定删除这条记录？')) {
-          await deleteEntry(btn.dataset.del);
-          await refreshList();
-        }
+  // --- Render advice ---
+  function renderAdvice() {
+    const filtered = advice.filter(a => isInRange(a.createdAt, currentRange));
+    if (filtered.length === 0) {
+      contentArea.innerHTML = '';
+      contentArea.appendChild(emptyState);
+      emptyState.querySelector('p').textContent = '暂无建议记录';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    emptyState.classList.add('hidden');
+    const groups = groupByDate(filtered, 'createdAt');
+    let html = '';
+
+    for (const [dateKey, items] of Object.entries(groups)) {
+      html += `<div class="mb-6">`;
+      html += `<div class="font-mono text-xs text-ink-faint mb-3">${labelForDate(dateKey)}</div>`;
+
+      for (const a of items) {
+        const links = getStockLinks(a.stockCode);
+        const isBuy = a.direction === 'buy';
+        const dirBadge = a.direction
+          ? (isBuy
+            ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-sage/10 text-sage">买入</span>`
+            : `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta">卖出</span>`)
+          : '';
+
+        const chartHtml = a.chartPath
+          ? `<div class="mt-3"><img src="${a.chartPath}" alt="K线图" class="rounded-lg border border-ink/10 cursor-pointer hover:opacity-80 transition-opacity chart-img w-full max-w-md" /></div>`
+          : '';
+
+        const reasonHtml = a.reason
+          ? `<p class="text-sm text-ink-light mt-2 leading-relaxed">${a.reason}</p>`
+          : '';
+
+        html += `
+          <div class="bg-paper rounded-xl p-5 shadow-sm border border-ink/[0.04] border-l-2 border-l-ink-faint hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-2">
+                  ${a.stockName ? `<span class="font-display text-2xl font-bold tracking-tight text-ink">${a.stockName}</span>` : ''}
+                  ${a.stockCode ? `<a href="${links.ths}" target="_blank" rel="noopener" class="font-mono text-sm font-bold px-2 py-0.5 rounded bg-terracotta/10 text-terracotta hover:bg-terracotta/20 transition-colors">${a.stockCode}</a>` : ''}
+                </div>
+                <div class="flex items-center gap-3">
+                  ${dirBadge}
+                  ${a.source ? `<span class="font-mono text-xs px-2 py-0.5 rounded-full bg-ink/[0.06] text-ink-light">${a.source}</span>` : ''}
+                  <span class="font-mono text-xs text-ink-faint">${formatFullDate(a.createdAt)}</span>
+                </div>
+              </div>
+            </div>
+            ${a.keyPrice ? `<div class="mt-3"><span class="font-mono text-xs text-ink-faint">关键价位</span> <span class="font-mono text-sm text-ink font-bold">${a.keyPrice.toFixed(2)}</span></div>` : ''}
+            ${reasonHtml}
+            <div class="flex gap-2 mt-2">
+              <a href="${links.ths}" target="_blank" rel="noopener" class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">同花顺 &nearr;</a>
+              <a href="${links.east}" target="_blank" rel="noopener" class="font-mono text-xs px-2 py-0.5 rounded bg-cream text-ink-light hover:text-terracotta transition-colors">东方财富 &nearr;</a>
+            </div>
+            ${chartHtml}
+          </div>
+        `;
+      }
+      html += `</div>`;
+    }
+
+    contentArea.innerHTML = html;
+    bindChartClicks();
+  }
+
+  // --- Lightbox ---
+  function bindChartClicks() {
+    contentArea.querySelectorAll('.chart-img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
       });
-    });
-
-    entryList.querySelectorAll('[data-edit]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const entry = allEntries.find(e => e.id === btn.dataset.edit);
-        if (!entry) return;
-        editId = entry.id;
-        setTab(entry.type);
-        document.getElementById('stock-code').value = entry.stockCode || '';
-        document.getElementById('stock-name').value = entry.stockName || '';
-        document.getElementById('price').value = entry.price || '';
-        document.getElementById('quantity').value = entry.quantity || '';
-        document.getElementById('reason').value = entry.reason || '';
-        document.getElementById('tags').value = (entry.tags || []).join(', ');
-        document.getElementById('friend').value = entry.friend || '';
-        if (entry.createdAt) {
-          const d = new Date(entry.createdAt);
-          const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-          document.getElementById('trade-time').value = local;
-        }
-        if (entry.type === 'trade') {
-          directionInput.value = entry.direction || 'buy';
-          dirBtns.forEach(b => {
-            const isActive = b.dataset.dir === entry.direction;
-            b.className = isActive
-              ? (entry.direction === 'buy'
-                  ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
-                  : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors')
-              : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
-          });
-        }
-        pendingImages = [...(entry.images || [])];
-        renderImagePreview();
-        cancelBtn.classList.remove('hidden');
-        form.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
-
-    entryList.querySelectorAll('.entry-img').forEach(img => {
-      img.addEventListener('click', () => openLightbox(img.src));
     });
   }
 
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+  });
+
+  // --- Render dispatcher ---
+  function render() {
+    if (currentTab === 'trades') {
+      renderTrades();
+    } else {
+      renderAdvice();
+    }
+  }
+
+  // --- Stats ---
   function updateStats() {
-    const now = new Date();
-    const weekAgo = new Date(now.getTime() - 7 * 86400000);
-    const weekly = allEntries.filter(e => e.type === 'trade' && new Date(e.createdAt) >= weekAgo).length;
-    const tips = allEntries.filter(e => e.type === 'tip').length;
+    const now = Date.now();
+    const weekAgo = now - 7 * 86400000;
+    const weekly = trades.filter(t => new Date(t.tradeTime).getTime() >= weekAgo).length;
 
     document.getElementById('stat-weekly').textContent = weekly;
-    document.getElementById('stat-total').textContent = allEntries.length;
-    document.getElementById('stat-tips').textContent = tips;
+    document.getElementById('stat-total').textContent = trades.length;
+    document.getElementById('stat-tips').textContent = advice.length;
   }
 
-  async function refreshList() {
-    allEntries = await getAllEntries();
-    updateStats();
-    renderEntries();
-  }
-
-  // --- Init ---
-  refreshList();
-
-  // ==========================================
-  // API Settings (any OpenAI-compatible multimodal API)
-  // ==========================================
-  const cfgEndpoint = document.getElementById('cfg-endpoint');
-  const cfgModel = document.getElementById('cfg-model');
-  const cfgKey = document.getElementById('cfg-key');
-  const cfgProxy = document.getElementById('cfg-proxy');
-  const cfgStatus = document.getElementById('cfg-status');
-
-  function loadConfig() {
-    cfgEndpoint.value = localStorage.getItem('tj_ark_endpoint') || '';
-    cfgModel.value = localStorage.getItem('tj_ark_model') || '';
-    cfgKey.value = localStorage.getItem('tj_ark_key') || '';
-    cfgProxy.value = localStorage.getItem('tj_cors_proxy') || '';
-    document.getElementById('cfg-format').value = localStorage.getItem('tj_api_format') || 'openai';
-  }
-  loadConfig();
-
-  // Auto-load from /ai-config.json (generated by npm run inject-config)
-  if (!cfgEndpoint.value && !cfgKey.value) {
-    fetch('/ai-config.json').then(r => r.ok ? r.json() : null).then(cfg => {
-      if (cfg && cfg.endpoint && cfg.key) {
-        cfgEndpoint.value = cfg.endpoint;
-        cfgModel.value = cfg.model || '';
-        cfgKey.value = cfg.key;
-        document.getElementById('cfg-format').value = 'anthropic';
-        localStorage.setItem('tj_ark_endpoint', cfg.endpoint);
-        localStorage.setItem('tj_ark_model', cfg.model || '');
-        localStorage.setItem('tj_ark_key', cfg.key);
-        localStorage.setItem('tj_api_format', 'anthropic');
-        updateAiButtonVisibility();
-      }
-    }).catch(() => {});
-  }
-
-  function isConfigured() {
-    return !!(cfgEndpoint.value.trim() && cfgKey.value.trim() && cfgModel.value.trim());
-  }
-
-  function showCfgStatus(msg, isError) {
-    cfgStatus.textContent = msg;
-    cfgStatus.className = `mt-3 text-sm ${isError ? 'text-terracotta' : 'text-sage'}`;
-    cfgStatus.classList.remove('hidden');
-  }
-
-  // Toggle settings panel
-  document.getElementById('toggle-settings').addEventListener('click', () => {
-    const panel = document.getElementById('settings-panel');
-    panel.classList.toggle('hidden');
-  });
-
-  // Save config
-  document.getElementById('btn-save-cfg').addEventListener('click', () => {
-    localStorage.setItem('tj_ark_endpoint', cfgEndpoint.value.trim());
-    localStorage.setItem('tj_ark_model', cfgModel.value.trim());
-    localStorage.setItem('tj_ark_key', cfgKey.value.trim());
-    localStorage.setItem('tj_cors_proxy', cfgProxy.value.trim());
-    localStorage.setItem('tj_api_format', document.getElementById('cfg-format').value);
-    showCfgStatus('配置已保存', false);
-    updateAiButtonVisibility();
-  });
-
-  // Test connection
-  document.getElementById('btn-test-cfg').addEventListener('click', async () => {
-    if (!isConfigured()) {
-      showCfgStatus('请填写完整的 Endpoint、Model ID 和 API Key', true);
-      return;
-    }
-    showCfgStatus('测试中...', false);
-    try {
-      const endpoint = cfgEndpoint.value.trim().replace(/\/+$/, '');
-      const url = `${endpoint}/chat/completions`;
-      const proxied = cfgProxy.value.trim() ? `${cfgProxy.value.trim()}${encodeURIComponent(url)}` : url;
-      const resp = await fetch(proxied, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${cfgKey.value.trim()}`
-        },
-        body: JSON.stringify({
-          model: cfgModel.value.trim(),
-          messages: [{ role: 'user', content: 'hi' }],
-          max_tokens: 5
-        })
+  // --- Tab buttons ---
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentTab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = b === btn
+          ? 'tab-btn font-mono text-xs px-4 py-1.5 rounded-full bg-ink text-cream transition-colors'
+          : 'tab-btn font-mono text-xs px-4 py-1.5 rounded-full bg-cream text-ink-light hover:bg-cream-dark transition-colors';
       });
-      if (resp.ok) {
-        showCfgStatus('连接成功', false);
-      } else {
-        const errText = await resp.text();
-        showCfgStatus(`连接失败 (${resp.status}): ${errText.slice(0, 120)}`, true);
-      }
-    } catch (e) {
-      showCfgStatus(`网络错误: ${e.message}`, true);
-    }
-  });
-
-  // ==========================================
-  // Stock Info Lookup (JSONP via Sina)
-  // ==========================================
-  const stockInfoEl = document.getElementById('stock-info');
-  let stockLookupTimer = null;
-
-  function getStockPrefix(code) {
-    return code.startsWith('6') ? 'sh'
-      : code.startsWith('4') || code.startsWith('8') ? 'bj' : 'sz';
-  }
-
-  function fetchStockInfo(code) {
-    return new Promise((resolve) => {
-      if (!code || code.length !== 6) {
-        stockInfoEl.classList.add('hidden');
-        resolve(null);
-        return;
-      }
-      const prefix = getStockPrefix(code);
-      const symbol = `${prefix}${code}`;
-      const varName = `hq_str_${symbol}`;
-      const existing = document.getElementById('hq-script');
-      if (existing) existing.remove();
-
-      const s = document.createElement('script');
-      s.id = 'hq-script';
-      s.src = `https://hq.sinajs.cn/list=${symbol}`;
-      s.charset = 'gb2312';
-      s.onload = () => {
-        s.remove();
-        const raw = window[varName];
-        if (!raw) {
-          stockInfoEl.classList.add('hidden');
-          resolve(null);
-          return;
-        }
-        const parts = raw.split(',');
-        const info = {
-          name: parts[0],
-          open: parseFloat(parts[1]),
-          yesterdayClose: parseFloat(parts[2]),
-          current: parseFloat(parts[3]),
-          high: parseFloat(parts[4]),
-          low: parseFloat(parts[5]),
-        };
-        delete window[varName];
-        if (!info.current || !info.yesterdayClose) {
-          stockInfoEl.classList.add('hidden');
-          resolve(null);
-          return;
-        }
-        const change = ((info.current - info.yesterdayClose) / info.yesterdayClose * 100).toFixed(2);
-        const sign = change >= 0 ? '+' : '';
-        const colorClass = change > 0 ? 'text-terracotta' : change < 0 ? 'text-sage' : '';
-        stockInfoEl.innerHTML = `<span class="${colorClass} font-bold">${info.name}</span> ${info.current.toFixed(2)} <span class="${colorClass}">${sign}${change}%</span> (昨收 ${info.yesterdayClose.toFixed(2)})`;
-        stockInfoEl.classList.remove('hidden');
-        resolve(info);
-      };
-      s.onerror = () => {
-        s.remove();
-        stockInfoEl.classList.add('hidden');
-        resolve(null);
-      };
-      document.head.appendChild(s);
+      render();
     });
-  }
-
-  // Debounced stock code input lookup
-  document.getElementById('stock-code').addEventListener('input', (e) => {
-    clearTimeout(stockLookupTimer);
-    const code = e.target.value.replace(/\D/g, '');
-    if (code.length !== 6) {
-      stockInfoEl.classList.add('hidden');
-      return;
-    }
-    stockLookupTimer = setTimeout(() => {
-      fetchStockInfo(code).then((info) => {
-        if (info && info.name) {
-          const nameInput = document.getElementById('stock-name');
-          if (!nameInput.value.trim()) {
-            nameInput.value = info.name;
-          }
-        }
-      });
-    }, 300);
   });
 
-  // ==========================================
-  // AI Analysis
-  // ==========================================
-  const aiActions = document.getElementById('ai-actions');
-  const aiStatus = document.getElementById('ai-status');
-  const btnAiAnalyze = document.getElementById('btn-ai-analyze');
-  const aiBtnText = document.getElementById('ai-btn-text');
-  const aiIcon = document.getElementById('ai-icon');
-  let aiAnalyzing = false;
+  // --- Range buttons ---
+  document.querySelectorAll('.range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentRange = btn.dataset.range;
+      document.querySelectorAll('.range-btn').forEach(b => {
+        b.className = b === btn
+          ? 'range-btn font-mono text-xs px-3 py-1 rounded-full bg-ink text-cream'
+          : 'range-btn font-mono text-xs px-3 py-1 rounded-full bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark';
+      });
+      render();
+    });
+  });
 
-  function updateAiButtonVisibility() {
-    if (pendingImages.length > 0 && isConfigured()) {
-      aiActions.classList.remove('hidden');
-    } else {
-      aiActions.classList.add('hidden');
-    }
-    aiStatus.classList.add('hidden');
-  }
-
-  function showAiStatus(msg, isError) {
-    aiStatus.textContent = msg;
-    aiStatus.className = `mt-3 text-sm ${isError ? 'text-terracotta' : 'text-sage'}`;
-    aiStatus.classList.remove('hidden');
-  }
-
-  async function aiAnalyze() {
-    if (aiAnalyzing) return;
-    if (!isConfigured()) {
-      showAiStatus('请先在 AI 设置中配置 API Key 和 Model ID', true);
-      return;
-    }
-    if (pendingImages.length === 0) {
-      showAiStatus('请先上传截图', true);
-      return;
-    }
-
-    aiAnalyzing = true;
-    btnAiAnalyze.disabled = true;
-    aiBtnText.textContent = '识别中...';
-    aiIcon.innerHTML = '<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>';
-    aiIcon.classList.add('animate-spin');
-    aiStatus.classList.add('hidden');
-
+  // --- Load data ---
+  async function loadData() {
     try {
-      const endpoint = cfgEndpoint.value.trim().replace(/\/+$/, '');
-      const apiKey = cfgKey.value.trim();
-      const model = cfgModel.value.trim();
-      const proxy = cfgProxy.value.trim();
-      const apiFormat = document.getElementById('cfg-format').value;
+      const [tradesResp, adviceResp] = await Promise.all([
+        fetch('/trading/data/trades.json'),
+        fetch('/trading/data/advice.json'),
+      ]);
+      if (tradesResp.ok) trades = await tradesResp.json();
+      if (adviceResp.ok) advice = await adviceResp.json();
 
-      const promptText = '分析这些交易截图/图片，提取以下信息并严格以JSON格式返回（不要包含其他文字）：\n{\n  "stockCode": "6位股票代码",\n  "stockName": "股票名称",\n  "direction": "buy或sell",\n  "price": 交易价格(数字),\n  "quantity": 交易数量(数字),\n  "dateTime": "交易时间 ISO格式",\n  "reason": "交易理由/分析",\n  "tags": ["标签1", "标签2"]\n}\n无法确定的字段返回null。如果图片不是交易相关内容，返回 {"error": "not_trade_related"}。';
+      trades.sort((a, b) => new Date(b.tradeTime) - new Date(a.tradeTime));
+      advice.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      let apiUrl, headers, body, responseText;
-
-      if (apiFormat === 'anthropic') {
-        // Anthropic format: /v1/messages
-        apiUrl = `${endpoint}/v1/messages`;
-        headers = {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        };
-        const imageContent = pendingImages.map(src => {
-          const match = src.match(/^data:(image\/\w+);base64,(.+)$/);
-          if (match) {
-            return { type: 'image', source: { type: 'base64', media_type: match[1], data: match[2] } };
-          }
-          return { type: 'image', source: { type: 'url', url: src } };
-        });
-        body = JSON.stringify({
-          model: model,
-          max_tokens: 1024,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: promptText },
-              ...imageContent,
-            ]
-          }]
-        });
-      } else {
-        // OpenAI format: /v1/chat/completions
-        apiUrl = `${endpoint}/chat/completions`;
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        };
-        body = JSON.stringify({
-          model: model,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: promptText },
-              ...pendingImages.map(src => ({ type: 'image_url', image_url: { url: src } })),
-            ]
-          }],
-          max_tokens: 1024,
-        });
-      }
-
-      const fetchUrl = proxy ? `${proxy}${encodeURIComponent(apiUrl)}` : apiUrl;
-
-      const resp = await fetch(fetchUrl, { method: 'POST', headers, body });
-
-      if (!resp.ok) {
-        const errText = await resp.text();
-        throw new Error(`API 请求失败 (${resp.status}): ${errText.slice(0, 200)}`);
-      }
-
-      const data = await resp.json();
-      if (apiFormat === 'anthropic') {
-        responseText = (data.content || []).map(c => c.text || '').join('');
-      } else {
-        responseText = data.choices?.[0]?.message?.content || '';
-      }
-      let text = responseText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error(`AI 返回内容无法解析为 JSON：\n${text.slice(0, 500)}`);
-      }
-
-      if (result.error) {
-        showAiStatus('图片似乎不是交易相关内容', true);
-        return;
-      }
-
-      // Fill form fields
-      if (result.stockCode) document.getElementById('stock-code').value = result.stockCode;
-      if (result.stockName) document.getElementById('stock-name').value = result.stockName;
-      if (result.price) document.getElementById('price').value = result.price;
-      if (result.quantity) document.getElementById('quantity').value = result.quantity;
-      if (result.reason) document.getElementById('reason').value = result.reason;
-      if (result.tags?.length) document.getElementById('tags').value = result.tags.join(', ');
-
-      // Direction
-      if (result.direction === 'sell' || result.direction === 'buy') {
-        directionInput.value = result.direction;
-        dirBtns.forEach(b => {
-          const isActive = b.dataset.dir === result.direction;
-          b.className = isActive
-            ? (result.direction === 'buy'
-                ? 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-sage/10 text-sage border border-sage/20 hover:bg-sage/20 transition-colors'
-                : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-terracotta/10 text-terracotta border border-terracotta/20 hover:bg-terracotta/20 transition-colors')
-            : 'dir-btn flex-1 font-mono text-sm px-4 py-2.5 rounded-lg bg-cream text-ink-light border border-ink/10 hover:bg-cream-dark transition-colors';
-        });
-      }
-
-      // DateTime
-      if (result.dateTime) {
-        try {
-          const d = new Date(result.dateTime);
-          if (!isNaN(d.getTime())) {
-            const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            document.getElementById('trade-time').value = local;
-          }
-        } catch {}
-      }
-
-      // Fetch real-time stock info for comparison
-      if (result.stockCode) {
-        fetchStockInfo(result.stockCode).then((info) => {
-          if (info && result.price && info.current) {
-            const diff = Math.abs((info.current - result.price) / result.price * 100);
-            if (diff > 2) {
-              showAiStatus(`识别完成 — 当前价 ${info.current.toFixed(2)}，截图价 ${result.price.toFixed(2)}（差异 ${diff.toFixed(1)}%）`, false);
-            } else {
-              showAiStatus('识别完成，请检查并保存', false);
-            }
-          } else {
-            showAiStatus('识别完成，请检查并保存', false);
-          }
-        });
-      } else {
-        showAiStatus('识别完成，请检查并保存', false);
-      }
+      updateStats();
+      render();
     } catch (e) {
-      showAiStatus(e.message, true);
-    } finally {
-      aiAnalyzing = false;
-      btnAiAnalyze.disabled = false;
-      aiBtnText.textContent = 'AI 识别';
-      aiIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.5L12 20l-6.364-6.364a5 5 0 010-7.072z"></path>';
-      aiIcon.classList.remove('animate-spin');
+      console.error('Failed to load trading data:', e);
     }
   }
 
-  btnAiAnalyze.addEventListener('click', aiAnalyze);
+  loadData();
 </script>
-
-<style>
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  input[type="number"] { -moz-appearance: textfield; }
-</style>

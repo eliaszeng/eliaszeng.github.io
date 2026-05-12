@@ -1,0 +1,24 @@
+[
+  {
+    "id": "b1c2d3e4-0001",
+    "stockCode": "000858",
+    "stockName": "五粮液",
+    "direction": "buy",
+    "keyPrice": 158.50,
+    "reason": "突破关键压力位，量价配合良好，白酒板块回暖",
+    "source": "老王",
+    "createdAt": "2026-05-12T08:00:00",
+    "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0002",
+    "stockCode": "601318",
+    "stockName": "中国平安",
+    "direction": "buy",
+    "keyPrice": 52.00,
+    "reason": "保险板块估值修复，股息率超5%，长期持有价值",
+    "source": "投研周报",
+    "createdAt": "2026-05-10T09:00:00",
+    "chartPath": ""
+  }
+]

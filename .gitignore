@@ -9,6 +9,7 @@ public/ai-config.json
 
 # 本地交易数据
 today-trades-*.json
+public/trading/data/*.json
 
 # 本地工具脚本（含 API key）
 scripts/ai-proxy.mjs

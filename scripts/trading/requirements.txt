@@ -1,0 +1,5 @@
+akshare>=1.14.0
+mplfinance>=0.12.10
+pandas>=2.0.0
+matplotlib>=3.7.0
+openai>=1.0.0
