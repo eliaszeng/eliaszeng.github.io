@@ -15,8 +15,8 @@
     "stockCode": "300063",
     "stockName": "天龙集团",
     "direction": "hold",
-    "keyPrice": 12.46,
-    "reason": "今日缩量明显（5944万 vs 昨日1亿），留着钱，明天如果分时出买点可以补仓降低成本",
+    "keyPrice": 11.15,
+    "reason": "今日缩量明显（5944万 vs 昨日1亿），技术面可能继续下探寻支撑，需等左侧量能换手转移完毕再考虑补仓",
     "source": "用户观察",
     "createdAt": "2026-05-12T21:20:00",
     "chartPath": "/trading/charts/300063_20260512.png"
