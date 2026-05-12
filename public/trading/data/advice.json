@@ -31,5 +31,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-12T21:40:00",
     "chartPath": "/trading/charts/300721_20260512.png"
+  },
+  {
+    "id": "b1c2d3e4-0006",
+    "stockCode": "300852",
+    "stockName": "四会富仕",
+    "direction": "buy",
+    "keyPrice": 44.15,
+    "reason": "近期强势拉升（46→58），等待W底走势确认后再介入，当前高位回调中",
+    "source": "用户观察",
+    "createdAt": "2026-05-12T21:55:00",
+    "chartPath": "/trading/charts/300852_20260512.png"
   }
 ]
