@@ -20,5 +20,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-12T21:20:00",
     "chartPath": "/trading/charts/300063_20260512.png"
+  },
+  {
+    "id": "b1c2d3e4-0005",
+    "stockCode": "300721",
+    "stockName": "怡达股份",
+    "direction": "hold",
+    "keyPrice": 20.63,
+    "reason": "小K缩量代表控盘良好（今日2055万 vs 昨日2898万，缩量29%），可能向下探底，需等左侧量能转移完毕",
+    "source": "用户观察",
+    "createdAt": "2026-05-12T21:40:00",
+    "chartPath": "/trading/charts/300721_20260512.png"
   }
 ]
