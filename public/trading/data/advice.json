@@ -163,5 +163,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:21:43",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0018",
+    "stockCode": "300444",
+    "stockName": "双杰电气",
+    "direction": "hold",
+    "keyPrice": 0,
+    "reason": "今天缩量没创新高，主力预计要在这里横盘整理。策略：上沿卖下沿买，保持仓位做差价",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:23:31",
+    "chartPath": ""
   }
 ]
