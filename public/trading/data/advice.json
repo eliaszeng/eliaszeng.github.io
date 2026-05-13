@@ -53,5 +53,38 @@
     "source": "用户观察",
     "createdAt": "2026-05-12T22:10:00",
     "chartPath": "/trading/charts/300480_20260512.png"
+  },
+  {
+    "id": "b1c2d3e4-0008",
+    "stockCode": "300067",
+    "stockName": "安诺其",
+    "direction": "hold",
+    "keyPrice": 7.44,
+    "reason": "有妖股潜质，K线干净。4月21-23三连板后回调，近期缩量整理（5/8起成交量持续缩小），今日收7.44止跌企稳，关注后续走势",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:09:23",
+    "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0009",
+    "stockCode": "300786",
+    "stockName": "国林科技",
+    "direction": "hold",
+    "keyPrice": 17.7,
+    "reason": "趋势好票，可做中长线。3月低点13.70以来稳步上行，均线多头排列，量价配合良好，今日收17.70创近期新高",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:12:57",
+    "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0010",
+    "stockCode": "300975",
+    "stockName": "商络电子",
+    "direction": "hold",
+    "keyPrice": 24.33,
+    "reason": "趋势线上进行买卖。2月以来稳步上行（15→24），均线多头排列，沿趋势线操作，今日收24.33，近期新高附近",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:15:12",
+    "chartPath": ""
   }
 ]
