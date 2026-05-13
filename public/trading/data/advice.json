@@ -152,5 +152,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:20:38",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0017",
+    "stockCode": "301329",
+    "stockName": "信音电子",
+    "direction": "hold",
+    "keyPrice": 0,
+    "reason": "可养，大结构待观察，持续关注走势发展",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:21:43",
+    "chartPath": ""
   }
 ]
