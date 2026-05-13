@@ -119,5 +119,38 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:19:02",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0014",
+    "stockCode": "300706",
+    "stockName": "阿石创",
+    "direction": "buy",
+    "keyPrice": 50.76,
+    "reason": "后续可能有牛的行情。3月低点31元以来稳步上行，5月突破前高，今日收50.76创近期新高，量能配合良好",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:20:15",
+    "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0015",
+    "stockCode": "300131",
+    "stockName": "英唐智控",
+    "direction": "hold",
+    "keyPrice": 20.32,
+    "reason": "好票可观察。4月10日突破后持续走强，今日收20.32创新高，成交量活跃，趋势向好",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:20:15",
+    "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0016",
+    "stockCode": "300602",
+    "stockName": "飞荣达",
+    "direction": "hold",
+    "keyPrice": 0,
+    "reason": "还不够，大结构不错，可以养着。等待进一步走势确认后再考虑操作",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:20:38",
+    "chartPath": ""
   }
 ]
