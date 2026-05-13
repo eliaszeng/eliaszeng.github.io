@@ -97,5 +97,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:17:32",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0012",
+    "stockCode": "300975",
+    "stockName": "商络电子",
+    "direction": "buy",
+    "keyPrice": 24.33,
+    "reason": "大结构好，还没完全启动。周线级别趋势良好，当前处于突破前的蓄力阶段，关注放量突破信号",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:18:19",
+    "chartPath": ""
   }
 ]
