@@ -108,5 +108,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:18:19",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0013",
+    "stockCode": "300852",
+    "stockName": "四会富仕",
+    "direction": "hold",
+    "keyPrice": 44.15,
+    "reason": "长上影线意图转移左侧量堆筹码？待出控盘特征后考虑介入。当前观察量能变化，等左侧筹码换手完毕再操作",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:19:02",
+    "chartPath": ""
   }
 ]
