@@ -174,5 +174,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:23:31",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0019",
+    "stockCode": "300831",
+    "stockName": "派瑞股份",
+    "direction": "hold",
+    "keyPrice": 0,
+    "reason": "半导体板块，可以养着，持续关注走势发展",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:31:42",
+    "chartPath": ""
   }
 ]
