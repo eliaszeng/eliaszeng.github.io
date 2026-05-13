@@ -86,5 +86,16 @@
     "source": "用户观察",
     "createdAt": "2026-05-13T21:15:12",
     "chartPath": ""
+  },
+  {
+    "id": "b1c2d3e4-0011",
+    "stockCode": "300900",
+    "stockName": "广联航空",
+    "direction": "hold",
+    "keyPrice": 48.3,
+    "reason": "下方缺口守住的话可以考虑跟进。3月底31元起步拉至52元高点，近期回调后企稳在46-49区间，今日收48.30，关注缺口支撑",
+    "source": "用户观察",
+    "createdAt": "2026-05-13T21:17:32",
+    "chartPath": ""
   }
 ]
